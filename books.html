@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Book Recommendations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Use a simple config to enable the 'dark' variant using a class
+        tailwind.config = {
+            darkMode: 'class',
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .container-card {
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            padding: 2.5rem;
+        }
+        .book-card {
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .book-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        #back-to-top {
+            display: none;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 lg:p-12 bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-500">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-10 md:mb-16 relative">
+            <h1 class="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight text-gray-900 dark:text-white transition-colors duration-500">📚 Best Book Recommendations</h1>
+            <p class="mt-4 text-xl md:text-2xl text-gray-600 dark:text-gray-300 transition-colors duration-500 max-w-3xl mx-auto">A curated list of must-read books on marketing, business, and personal development, organized by the people who recommend them.</p>
+
+            <!-- Dark Mode Toggle Button -->
+            <button id="theme-toggle" class="absolute top-0 right-0 p-2 rounded-full text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none transition-colors duration-500">
+                <!-- Sun Icon (Light Mode) -->
+                <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <!-- Moon Icon (Dark Mode) -->
+                <svg id="moon-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+        </header>
+        
+        <!-- Tab Navigation -->
+        <div class="flex flex-wrap justify-center mb-8 gap-2">
+            <button class="tab-button active px-6 py-2 rounded-full text-sm font-medium bg-blue-500 text-white dark:bg-blue-700 dark:text-gray-100 transition-colors duration-300" data-tab="anoop">Anoop</button>
+            <button class="tab-button px-6 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors duration-300" data-tab="sheldon">Sheldon</button>
+            <button class="tab-button px-6 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors duration-300" data-tab="sabu">Sabu</button>
+            <button class="tab-button px-6 py-2 rounded-full text-sm font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 transition-colors duration-300" data-tab="other">Other</button>
+        </div>
+
+        <!-- Tabbed Content -->
+        <div id="tab-container">
+            <!-- Anoop's Recommendations -->
+            <div id="anoop-content" class="tab-content active container-card mb-12 bg-white dark:bg-gray-800 transition-colors duration-500">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-500 mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">Anoop's Recommendations</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Alchemy: The Surprising Power of Ideas That Don't Make Sense</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Rory Sutherland</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Positioning: The Battle for Your Mind</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Al Ries and Jack Trout</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The 4-Hour Workweek</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Tim Ferriss</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Good Strategy/Bad Strategy: The Difference and Why It Matters</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Richard P. Rumelt <span class="font-bold text-teal-600 dark:text-teal-400 transition-colors duration-500">(Definitely Read)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Selling the Invisible: A Field Guide to Modern Marketing</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Harry Beckwith</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Breakthrough Advertising</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Eugene M. Schwartz</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Scientific Advertising</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Claude C. Hopkins</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The Boron Letters</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Gary Halbert <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(writing)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Don't Make Me Think</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Steve Krug <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(UI/UX)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Purple Cow</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Seth Godin <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(Standout in a crowded market)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">You Can't Teach a Kid to Ride a Bike at a Seminar</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by John Hayes <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(Sales)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Buyology: Truth and Lies About Why We Buy</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Martin Lindstrom</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Why Men Gamble and Women Buy Shoes</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Alan S. Miller and Satoshi Kanazawa</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Business Model Generation</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Alexander Osterwalder and Yves Pigneur <span class="font-bold text-teal-600 dark:text-teal-400 transition-colors duration-500">(Definitely Read)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The E Myth Revisited</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Michael E. Gerber <span class="font-bold text-teal-600 dark:text-teal-400 transition-colors duration-500">(Original is good, Definitely Read)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Ogilvy on Advertising</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by David Ogilvy <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(Get paperback)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Misbehaving: The Making of Behavioral Economics</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Richard Thaler</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Extraordinary Popular Delusions and the Madness of Crowds</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Charles Mackay</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Marketing Myopia</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Theodore Levitt</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The Anatomy of Buzz</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Emanuel Rosen</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The Cluetrain Manifesto</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by David Weinberger <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(On Social Media)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Hey Whipple, Squeeze This</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Luke Sullivan</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Waiting for Your Cat to Bark?</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Bryan Eisenberg, Jeffrey Eisenberg, and Lisa Davis</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Great Leads</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Michael Masterson <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(writing)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Seth Godin Books</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500"><span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(Read all his books)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Guerrilla Marketing</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Jay Conrad Levinson <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(Worth Reading)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The 22 Immutable Laws of Marketing</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Al Ries and Jack Trout</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The 1-Page Marketing Plan</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Allan Dib <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(For Beginners, start with this)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">How to Fail at Almost Everything and Still Win Big</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Scott Adams <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(For Career advice)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Flow</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Mihaly Csikszentmihalyi <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(From Blog Class)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Deep Work</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Cal Newport <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(From Blog Class)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Jobs to Be Done: Theory to Practice</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Anthony W. Ulwick</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The Seven-Day Weekend</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Ricardo Semler</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sheldon's Recommendations -->
+            <div id="sheldon-content" class="tab-content container-card mb-12 bg-white dark:bg-gray-800 transition-colors duration-500">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-500 mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">Sheldon's Recommendations</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Everybody Writes</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Ann Handley <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(writing)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">This is Marketing: You Can’t Be Seen Until You Learn To See</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Seth Godin <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(For Beginners)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Creative Confidence: Unleashing the Creative Potential Within Us All</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by David M. Kelley and Tom Kelley</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The Brand Gap: Revised Edition</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Marty Neumeier</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Zag: The Number-one Strategy of High-performance Brands</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Marty Neumeier</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Why We Buy: The Science of Shopping</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Paco Underhill</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Made to Stick: Why Some Ideas Survive and Others Die</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Chip Heath and Dan Heath</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The Art of Looking Sideways</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Alan Fletcher</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Damn Good Advice</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by George Lois</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">To Sell Is Human</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Daniel H. Pink</p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Building a StoryBrand</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Donald Miller <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(About Stories)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">This Is Service Design Doing: Applying Service Design Thinking in the Real World</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500"><span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(UI/UX)</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sabu's Recommendations -->
+            <div id="sabu-content" class="tab-content container-card mb-12 bg-white dark:bg-gray-800 transition-colors duration-500">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-500 mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">Sabu's Recommendations</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">The Long Tail: Why the Future of Business is Selling Less of More</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Chris Anderson <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(leverage the power of internet/sales on internet)</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Other Recommendations -->
+            <div id="other-content" class="tab-content container-card bg-white dark:bg-gray-800 transition-colors duration-500">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-200 transition-colors duration-500 mb-6 border-b-2 border-gray-200 dark:border-gray-600 pb-4">Other Recommendations</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">SPIN Selling</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Neil Rackham <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(Sales)</span></p>
+                    </div>
+                    <div class="book-card p-6 bg-gray-50 rounded-2xl border border-gray-100 dark:bg-gray-700 dark:border-gray-600 transition-colors duration-500">
+                        <h3 class="font-semibold text-lg text-gray-900 dark:text-white transition-colors duration-500">Sales EQ</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-500">by Jeb Blount and Anthony Iannarino <span class="text-gray-400 dark:text-gray-500 transition-colors duration-500">(Sales)</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Top Button -->
+        <button id="back-to-top" class="fixed bottom-4 right-4 bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+            </svg>
+        </button>
+
+    </div>
+
+    <script>
+        const backToTopButton = document.getElementById('back-to-top');
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const sunIcon = document.getElementById('sun-icon');
+        const moonIcon = document.getElementById('moon-icon');
+        const htmlElement = document.documentElement;
+
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Check for saved theme preference on page load
+        if (localStorage.getItem('theme') === 'dark') {
+            htmlElement.classList.add('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+        }
+
+        // Show or hide the back-to-top button based on scroll position
+        window.onscroll = function() {
+            if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+                backToTopButton.style.display = "block";
+            } else {
+                backToTopButton.style.display = "none";
+            }
+        };
+
+        // Scroll to the top when the button is clicked
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Toggle theme and save to local storage
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            sunIcon.classList.toggle('hidden');
+            moonIcon.classList.toggle('hidden');
+            if (htmlElement.classList.contains('dark')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.removeItem('theme');
+            }
+        });
+
+        // Tab functionality
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const targetTab = button.dataset.tab;
+
+                // Deactivate all buttons and content
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'bg-blue-500', 'text-white', 'dark:bg-blue-700', 'dark:text-gray-100');
+                    btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'dark:bg-gray-700', 'dark:text-gray-300', 'dark:hover:bg-gray-600');
+                });
+                tabContents.forEach(content => {
+                    content.classList.remove('active');
+                });
+
+                // Activate the clicked button and its content
+                button.classList.add('active', 'bg-blue-500', 'text-white', 'dark:bg-blue-700', 'dark:text-gray-100');
+                button.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300', 'dark:bg-gray-700', 'dark:text-gray-300', 'dark:hover:bg-gray-600');
+                document.getElementById(`${targetTab}-content`).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
