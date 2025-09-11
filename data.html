@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demographic Indicators Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1e293b;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .card {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.15);
+        }
+        .highlight {
+            background-color: #e0f2fe;
+        }
+        .chart-bar {
+            background-color: #3b82f6;
+            transition: width 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <div class="container mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-blue-900 leading-tight mb-2">Demographic Snapshot (2023)</h1>
+            <p class="text-lg md:text-xl text-gray-600">Comparison of Key Indicators: India vs. South Indian States</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <!-- Card 1: Sample Population -->
+            <div class="card p-6 rounded-2xl">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Sample Population (000s)</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>India</span>
+                        <span>8,800</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: 100%;"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Telangana</span>
+                        <span>234</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(234/8800 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Andhra Pradesh</span>
+                        <span>358</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(358/8800 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Kerala</span>
+                        <span>394</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(394/8800 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Karnataka</span>
+                        <span>515</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(515/8800 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Tamil Nadu</span>
+                        <span>568</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(568/8800 * 100%);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Crude Birth Rate -->
+            <div class="card p-6 rounded-2xl">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Crude Birth Rate (per 1000)</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>India</span>
+                        <span>18.4</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(18.4/20 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Telangana</span>
+                        <span>15.8</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(15.8/20 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Andhra Pradesh</span>
+                        <span>15.0</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(15.0/20 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Karnataka</span>
+                        <span>15.2</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(15.2/20 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Kerala</span>
+                        <span>12.3</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(12.3/20 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Tamil Nadu</span>
+                        <span>12.0</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(12.0/20 * 100%);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Crude Death Rate -->
+            <div class="card p-6 rounded-2xl">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Crude Death Rate (per 1000)</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>India</span>
+                        <span>6.4</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(6.4/8 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Telangana</span>
+                        <span>6.3</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(6.3/8 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Andhra Pradesh</span>
+                        <span>6.9</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(6.9/8 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Kerala</span>
+                        <span>7.2</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(7.2/8 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Karnataka</span>
+                        <span>6.8</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(6.8/8 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Tamil Nadu</span>
+                        <span>6.9</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(6.9/8 * 100%);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Sex Ratio at Birth -->
+            <div class="card p-6 rounded-2xl">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Sex Ratio at Birth (females per 1000 males)</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>India</span>
+                        <span>917</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(917/1000 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Telangana</span>
+                        <span>908</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(908/1000 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Andhra Pradesh</span>
+                        <span>943</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(943/1000 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Kerala</span>
+                        <span>971</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(971/1000 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Karnataka</span>
+                        <span>943</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(943/1000 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Tamil Nadu</span>
+                        <span>933</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(933/1000 * 100%);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 5: Infant Mortality Rate -->
+            <div class="card p-6 rounded-2xl">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Infant Mortality Rate (per 1000 live births)</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>India</span>
+                        <span>25</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(25/30 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Telangana</span>
+                        <span>18</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(18/30 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Andhra Pradesh</span>
+                        <span>19</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(19/30 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Kerala</span>
+                        <span>5</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(5/30 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Karnataka</span>
+                        <span>23</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(23/30 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>Tamil Nadu</span>
+                        <span>12</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(12/30 * 100%);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 6: Total Fertility Rate -->
+            <div class="card p-6 rounded-2xl">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4">Total Fertility Rate (children per woman)</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600">
+                        <span>India</span>
+                        <span>1.9</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(1.9/2.5 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Telangana</span>
+                        <span>1.5</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(1.5/2.5 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Andhra Pradesh</span>
+                        <span>1.5</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(1.5/2.5 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Kerala</span>
+                        <span>1.5</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(1.5/2.5 * 100%);"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Karnataka</span>
+                        <span>1.5</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(1.5/2.5 * 100%);"></div>
+                    </div>
+
+                    <div class="flex justify-between items-center text-sm font-semibold text-gray-600 highlight rounded-lg px-2 py-1">
+                        <span>Tamil Nadu</span>
+                        <span>1.3</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2.5">
+                        <div class="chart-bar h-2.5 rounded-full" style="width: calc(1.3/2.5 * 100%);"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
