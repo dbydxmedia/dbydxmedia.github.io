@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sahithi — Content Creator Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+  :root {
+    --saffron: #E8651A;
+    --terracotta: #C4522A;
+    --deep-teal: #1A4A4A;
+    --soft-gold: #D4A853;
+    --blush: #F5E8DF;
+    --cream: #FAF5EF;
+    --charcoal: #1C1C1C;
+    --muted: #7A6E65;
+    --card-bg: #FFFFFF;
+    --border: #E8D9CC;
+    --spiritual: #7B4F8E;
+    --travel: #1A6B8A;
+    --fashion: #C4522A;
+    --funny: #D4903A;
+    --yoga: #2E7D5E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ─── HERO SECTION ─── */
+  .hero {
+    min-height: 100vh;
+    background: var(--deep-teal);
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+  }
+
+  .hero-bg-circle {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.08;
+    background: var(--soft-gold);
+  }
+  .hero-bg-circle:nth-child(1) { width: 600px; height: 600px; top: -200px; right: -100px; }
+  .hero-bg-circle:nth-child(2) { width: 300px; height: 300px; bottom: 100px; left: 100px; background: var(--saffron); opacity: 0.06; }
+
+  .hero-grid-line {
+    position: absolute;
+    background: rgba(255,255,255,0.04);
+  }
+  .hero-grid-line.v { width: 1px; height: 100%; top: 0; }
+  .hero-grid-line.h { height: 1px; width: 100%; left: 0; }
+  .hero-grid-line:nth-child(3) { left: 33%; }
+  .hero-grid-line:nth-child(4) { left: 66%; }
+  .hero-grid-line:nth-child(5) { top: 33%; }
+  .hero-grid-line:nth-child(6) { top: 66%; }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 60px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--soft-gold);
+    border: 1px solid rgba(212,168,83,0.4);
+    padding: 6px 14px;
+    border-radius: 2px;
+    margin-bottom: 28px;
+    width: fit-content;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 6vw, 88px);
+    font-weight: 900;
+    color: #FFFFFF;
+    line-height: 0.95;
+    margin-bottom: 8px;
+    animation: fadeUp 0.8s 0.1s ease both;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--soft-gold);
+    display: block;
+  }
+
+  .hero-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 2vw, 22px);
+    color: rgba(255,255,255,0.55);
+    font-style: italic;
+    margin-bottom: 40px;
+    line-height: 1.5;
+    max-width: 420px;
+    animation: fadeUp 0.8s 0.2s ease both;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 36px;
+    animation: fadeUp 0.8s 0.3s ease both;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--soft-gold);
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .hero-divider {
+    width: 40px;
+    height: 1px;
+    background: rgba(255,255,255,0.15);
+    margin: 36px 0;
+  }
+
+  .hero-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    padding: 60px;
+  }
+
+  .hero-visual {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .hero-card {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 32px;
+    animation: fadeUp 0.8s 0.4s ease both;
+  }
+
+  .hero-card-title {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--soft-gold);
+    margin-bottom: 20px;
+  }
+
+  .pillar-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .pillar-chip {
+    padding: 6px 14px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pillar-chip.spiritual { background: rgba(123,79,142,0.25); color: #C49FD8; border: 1px solid rgba(123,79,142,0.3); }
+  .pillar-chip.travel { background: rgba(26,107,138,0.25); color: #7EC8E3; border: 1px solid rgba(26,107,138,0.3); }
+  .pillar-chip.fashion { background: rgba(196,82,42,0.25); color: #F5AA87; border: 1px solid rgba(196,82,42,0.3); }
+  .pillar-chip.funny { background: rgba(212,144,58,0.25); color: #F5D08A; border: 1px solid rgba(212,144,58,0.3); }
+  .pillar-chip.yoga { background: rgba(46,125,94,0.25); color: #8ECDB5; border: 1px solid rgba(46,125,94,0.3); }
+
+  .hero-bio {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.7;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 20px;
+  }
+
+  .floating-badge {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    background: var(--saffron);
+    color: white;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 0 8px 32px rgba(232,101,26,0.4);
+    animation: spin 20s linear infinite;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .floating-badge span {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: 1;
+    animation: spin 20s linear infinite reverse;
+  }
+
+  /* ─── SCROLL INDICATOR ─── */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.3);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    z-index: 2;
+    animation: float 2s ease-in-out infinite;
+  }
+
+  .scroll-indicator::after {
+    content: '';
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-6px); }
+  }
+
+  /* ─── SECTION WRAPPER ─── */
+  .section {
+    padding: 100px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+    margin-bottom: 60px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 4px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    font-weight: 700;
+    color: var(--charcoal);
+    line-height: 1.1;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--saffron);
+  }
+
+  /* ─── ABOUT SECTION ─── */
+  .about-section {
+    background: var(--deep-teal);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .about-section::before {
+    content: 'SAHITHI';
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    font-size: 200px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.02);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .about-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .about-left .about-intro {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--soft-gold);
+    margin-bottom: 20px;
+  }
+
+  .about-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(30px, 3vw, 44px);
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 28px;
+  }
+
+  .about-headline em { font-style: italic; color: var(--soft-gold); }
+
+  .about-body {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 32px;
+  }
+
+  .about-pain-points {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pain-point {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+
+  .pain-point::before {
+    content: '→';
+    color: var(--saffron);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .about-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .about-stat-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+    cursor: default;
+  }
+
+  .about-stat-card:hover {
+    background: rgba(255,255,255,0.08);
+    transform: translateX(8px);
+  }
+
+  .stat-icon {
+    font-size: 28px;
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .stat-icon.s { background: rgba(123,79,142,0.2); }
+  .stat-icon.t { background: rgba(26,107,138,0.2); }
+  .stat-icon.f { background: rgba(196,82,42,0.2); }
+  .stat-icon.fu { background: rgba(212,144,58,0.2); }
+  .stat-icon.y { background: rgba(46,125,94,0.2); }
+
+  .about-stat-info h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 4px;
+  }
+
+  .about-stat-info p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.4;
+  }
+
+  /* ─── IDEAS SECTION ─── */
+  .ideas-section {
+    padding: 80px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .ideas-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .filter-tab {
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .filter-tab.active, .filter-tab:hover {
+    border-color: currentColor;
+  }
+
+  .filter-tab[data-cat="all"].active { border-color: var(--charcoal); color: var(--charcoal); background: var(--charcoal); color: white; }
+  .filter-tab[data-cat="spiritual"].active { border-color: var(--spiritual); color: var(--spiritual); background: rgba(123,79,142,0.08); }
+  .filter-tab[data-cat="travel"].active { border-color: var(--travel); color: var(--travel); background: rgba(26,107,138,0.08); }
+  .filter-tab[data-cat="fashion"].active { border-color: var(--fashion); color: var(--fashion); background: rgba(196,82,42,0.08); }
+  .filter-tab[data-cat="funny"].active { border-color: var(--funny); color: var(--funny); background: rgba(212,144,58,0.08); }
+  .filter-tab[data-cat="yoga"].active { border-color: var(--yoga); color: var(--yoga); background: rgba(46,125,94,0.08); }
+
+  .selection-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .selection-count {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .selection-count strong {
+    color: var(--saffron);
+    font-size: 16px;
+  }
+
+  .select-all-btn {
+    font-size: 12px;
+    color: var(--saffron);
+    cursor: pointer;
+    background: none;
+    border: none;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    padding: 0;
+  }
+
+  /* ─── CATEGORY SECTION ─── */
+  .category-block {
+    margin-bottom: 56px;
+    transition: all 0.3s ease;
+  }
+
+  .category-block.hidden { display: none; }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  .category-emoji {
+    font-size: 22px;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cat-spiritual .category-emoji { background: rgba(123,79,142,0.1); }
+  .cat-travel .category-emoji { background: rgba(26,107,138,0.1); }
+  .cat-fashion .category-emoji { background: rgba(196,82,42,0.1); }
+  .cat-funny .category-emoji { background: rgba(212,144,58,0.1); }
+  .cat-yoga .category-emoji { background: rgba(46,125,94,0.1); }
+
+  .category-title-wrap h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--charcoal);
+  }
+
+  .category-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .category-count {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+  }
+
+  .ideas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 16px;
+  }
+
+  /* ─── IDEA CARD ─── */
+  .idea-card {
+    background: var(--card-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    user-select: none;
+  }
+
+  .idea-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .idea-card.selected {
+    border-width: 2px;
+  }
+
+  .cat-spiritual .idea-card.selected { border-color: var(--spiritual); background: rgba(123,79,142,0.04); }
+  .cat-travel .idea-card.selected { border-color: var(--travel); background: rgba(26,107,138,0.04); }
+  .cat-fashion .idea-card.selected { border-color: var(--fashion); background: rgba(196,82,42,0.04); }
+  .cat-funny .idea-card.selected { border-color: var(--funny); background: rgba(212,144,58,0.04); }
+  .cat-yoga .idea-card.selected { border-color: var(--yoga); background: rgba(46,125,94,0.04); }
+
+  .idea-checkbox {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .idea-card.selected .idea-checkbox {
+    border-color: transparent;
+  }
+
+  .cat-spiritual .idea-card.selected .idea-checkbox { background: var(--spiritual); }
+  .cat-travel .idea-card.selected .idea-checkbox { background: var(--travel); }
+  .cat-fashion .idea-card.selected .idea-checkbox { background: var(--fashion); }
+  .cat-funny .idea-card.selected .idea-checkbox { background: var(--funny); }
+  .cat-yoga .idea-card.selected .idea-checkbox { background: var(--yoga); }
+
+  .idea-checkbox::after {
+    content: '';
+    width: 10px;
+    height: 6px;
+    border-left: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: rotate(-45deg) scale(0);
+    transition: transform 0.15s ease;
+    margin-top: -2px;
+  }
+
+  .idea-card.selected .idea-checkbox::after { transform: rotate(-45deg) scale(1); }
+
+  .idea-content { flex: 1; min-width: 0; }
+
+  .idea-number {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 6px;
+    opacity: 0.6;
+  }
+
+  .idea-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.45;
+    color: var(--charcoal);
+    margin-bottom: 8px;
+  }
+
+  .idea-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.55;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .idea-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .idea-badge.sourced {
+    background: rgba(46,125,94,0.12);
+    color: var(--yoga);
+  }
+
+  /* ─── STICKY FOOTER GENERATE BAR ─── */
+  .generate-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 900;
+    padding: 20px 60px;
+    background: rgba(250,245,239,0.92);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .generate-bar.visible { transform: translateY(0); }
+
+  .generate-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .generate-bar-count {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--saffron);
+    line-height: 1;
+  }
+
+  .generate-bar-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .generate-bar-text strong {
+    color: var(--charcoal);
+    display: block;
+    font-size: 15px;
+    margin-bottom: 2px;
+  }
+
+  .generate-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .btn-clear {
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+    transition: all 0.2s ease;
+  }
+
+  .btn-clear:hover { border-color: var(--charcoal); color: var(--charcoal); }
+
+  .btn-generate {
+    padding: 14px 32px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--saffron), var(--terracotta));
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 20px rgba(232,101,26,0.3);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-generate::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .btn-generate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(232,101,26,0.4);
+  }
+
+  .btn-generate:hover::before { opacity: 1; }
+
+  .btn-generate:active { transform: translateY(0); }
+
+  .btn-generate .icon { font-size: 18px; }
+
+  /* ─── LOADING OVERLAY ─── */
+  .loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(26,74,74,0.92);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .loading-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: var(--soft-gold);
+    border-radius: 50%;
+    animation: rotate 0.8s linear infinite;
+    margin-bottom: 20px;
+  }
+
+  @keyframes rotate { to { transform: rotate(360deg); } }
+
+  .loading-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: white;
+    font-style: italic;
+  }
+
+  .loading-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 6px;
+  }
+
+  /* ─── HIDDEN CANVAS FOR IMAGE GENERATION ─── */
+  #export-canvas {
+    position: fixed;
+    top: -10000px;
+    left: -10000px;
+    width: 1200px;
+    background: #FAF5EF;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 60px 32px; }
+    .about-inner { grid-template-columns: 1fr; gap: 40px; }
+    .ideas-section, .section { padding: 60px 24px; }
+    .generate-bar { padding: 16px 24px; }
+    .ideas-grid { grid-template-columns: 1fr; }
+    .section-header { flex-direction: column; gap: 6px; }
+  }
+
+  /* ─── CROSS-PILLAR SERIES ─── */
+  .series-section {
+    background: var(--blush);
+    padding: 80px 0;
+  }
+
+  .series-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 60px;
+  }
+
+  .series-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 48px;
+  }
+
+  .series-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .series-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+
+  .series-card:nth-child(1)::before { background: linear-gradient(90deg, var(--spiritual), var(--travel)); }
+  .series-card:nth-child(2)::before { background: linear-gradient(90deg, var(--yoga), var(--travel)); }
+  .series-card:nth-child(3)::before { background: linear-gradient(90deg, var(--fashion), var(--travel)); }
+  .series-card:nth-child(4)::before { background: linear-gradient(90deg, var(--spiritual), var(--funny)); }
+
+  .series-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+
+  .series-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .series-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 10px;
+  }
+
+  .series-pillars {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .series-pillar-tag {
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+
+  .series-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 900px) {
+    .series-grid { grid-template-columns: 1fr 1fr; }
+    .series-inner { padding: 0 24px; }
+  }
+
+  @media (max-width: 600px) {
+    .series-grid { grid-template-columns: 1fr; }
+    .filter-tabs { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loading">
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Creating your content board...</div>
+  <div class="loading-sub">Generating high-quality image</div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-bg-circle"></div>
+  <div class="hero-bg-circle"></div>
+  <div class="hero-grid-line v"></div>
+  <div class="hero-grid-line v"></div>
+  <div class="hero-grid-line h"></div>
+  <div class="hero-grid-line h"></div>
+
+  <div class="hero-left">
+    <div class="hero-tag">✦ Content Creator Hub</div>
+    <div class="hero-name">Sahi<em>thi</em></div>
+    <div class="hero-tagline">Solo travel. Yoga & wellness. Fashion. Spirituality. Funny realities. All at once — unapologetically.</div>
+
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-number">60.4K</div>
+        <div class="stat-label">Instagram</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">15.4K</div>
+        <div class="stat-label">YouTube</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">72</div>
+        <div class="stat-label">Video Ideas</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">5</div>
+        <div class="stat-label">Pillars</div>
+      </div>
+    </div>
+
+    <div class="hero-divider"></div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <span style="font-size:12px; color:rgba(255,255,255,0.35); display:flex; align-items:center; gap:6px;">
+        <span style="color:var(--soft-gold)">📍</span> Hyderabad & Vizag, India
+      </span>
+      <span style="font-size:12px; color:rgba(255,255,255,0.35)">·</span>
+      <span style="font-size:12px; color:rgba(255,255,255,0.35); display:flex; align-items:center; gap:6px;">
+        <span style="color:var(--soft-gold)">🗣</span> Telugu · English · Hindi
+      </span>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-visual">
+      <div class="floating-badge">
+        <span>✦</span>
+        Creator
+      </div>
+      <div class="hero-card">
+        <div class="hero-card-title">Content Pillars</div>
+        <div class="pillar-chips">
+          <span class="pillar-chip spiritual">✨ Spiritual</span>
+          <span class="pillar-chip travel">🌍 Solo Travel</span>
+          <span class="pillar-chip fashion">👗 Fashion</span>
+          <span class="pillar-chip funny">😂 Funny</span>
+          <span class="pillar-chip yoga">🧘 Yoga</span>
+        </div>
+        <div class="hero-bio">
+          She makes her audience feel like <em style="color:var(--soft-gold); font-style:normal; font-weight:600;">they could do it too.</em> Warm, witty, a little sarcastic — deeply authentic. Showing the world you can be spiritual AND ambitious AND fashionable AND Indian, all at once.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">Explore Ideas</div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ABOUT
+════════════════════════════════════════════ -->
+<section class="about-section">
+  <div class="about-inner">
+    <div class="about-left">
+      <div class="about-intro">About the Creator</div>
+      <h2 class="about-headline">Where <em>spirituality</em> meets suitcases, yoga mats & bold outfits</h2>
+      <p class="about-body">
+        Sahithi is a solo female traveler, yoga practitioner, and fashion lover based between Hyderabad and Vizag. Her content sits at the intersection of ancient wisdom and modern life — proving that you don't have to choose between being grounded and being glamorous.
+        <br><br>
+        Her audience — Indian women aged 22–38 — see themselves in her. They're stuck between who they are and who they want to become. She gives them permission to be all of it.
+      </p>
+      <div class="about-pain-points">
+        <div class="pain-point">Solo travel dreamers afraid to book that first flight</div>
+        <div class="pain-point">Women wanting to look good while staying spiritual</div>
+        <div class="pain-point">Seekers craving meaning beyond just aesthetics</div>
+        <div class="pain-point">People paralysed by the gap between vision and reality</div>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="about-stat-card">
+        <div class="stat-icon s">✨</div>
+        <div class="about-stat-info">
+          <h4>Spiritual Content</h4>
+          <p>Honest, grounded spirituality — not toxic positivity. Real practices, real doubt, real growth.</p>
+        </div>
+      </div>
+      <div class="about-stat-card">
+        <div class="stat-icon t">🌍</div>
+        <div class="about-stat-info">
+          <h4>Solo Travel</h4>
+          <p>Safety, budget, emotion, culture. For the Indian woman the world told to stay home.</p>
+        </div>
+      </div>
+      <div class="about-stat-card">
+        <div class="stat-icon f">👗</div>
+        <div class="about-stat-info">
+          <h4>Fashion & Style</h4>
+          <p>Indian silhouettes abroad. Real budget finds. Style that doesn't compromise identity.</p>
+        </div>
+      </div>
+      <div class="about-stat-card">
+        <div class="stat-icon fu">😂</div>
+        <div class="about-stat-info">
+          <h4>Funny & Relatable</h4>
+          <p>The gap between Pinterest vision and chaotic reality. The healing era from the couch.</p>
+        </div>
+      </div>
+      <div class="about-stat-card">
+        <div class="stat-icon y">🧘</div>
+        <div class="about-stat-info">
+          <h4>Yoga & Wellness</h4>
+          <p>Yoga for overthinkers. At airports. In hostels. On windy hilltops. Real, accessible, hers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     CROSS-PILLAR SERIES
+════════════════════════════════════════════ -->
+<section class="series-section">
+  <div class="series-inner">
+    <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:8px;">
+      <span style="font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--muted);">Cross-Pillar</span>
+      <h2 style="font-family:'Playfair Display',serif; font-size:clamp(28px,3vw,40px); font-weight:700; color:var(--charcoal);">Signature <em style="font-style:italic; color:var(--saffron);">Series Ideas</em></h2>
+    </div>
+    <p style="font-size:14px; color:var(--muted); max-width:600px; line-height:1.6;">Recurring formats that build audience loyalty across pillars — the content that defines a channel.</p>
+    <div class="series-grid">
+      <div class="series-card">
+        <div class="series-label">Series A</div>
+        <div class="series-name">"Solo & Sacred"</div>
+        <div class="series-pillars">
+          <span class="series-pillar-tag" style="background:rgba(123,79,142,0.12); color:var(--spiritual);">✨ Spiritual</span>
+          <span class="series-pillar-tag" style="background:rgba(26,107,138,0.12); color:var(--travel);">🌍 Travel</span>
+        </div>
+        <div class="series-desc">Varanasi, Tirupati, Hampi, Rishikesh, Lepakshi — with inner journey narration. Spiritually significant solo destinations through Sahithi's lens.</div>
+      </div>
+      <div class="series-card">
+        <div class="series-label">Series B</div>
+        <div class="series-name">"Yoga Everywhere"</div>
+        <div class="series-pillars">
+          <span class="series-pillar-tag" style="background:rgba(46,125,94,0.12); color:var(--yoga);">🧘 Yoga</span>
+          <span class="series-pillar-tag" style="background:rgba(26,107,138,0.12); color:var(--travel);">🌍 Travel</span>
+          <span class="series-pillar-tag" style="background:rgba(212,144,58,0.12); color:var(--funny);">😂 Funny</span>
+        </div>
+        <div class="series-desc">Yoga in progressively absurd or beautiful travel locations. A reusable format that lives across every trip she takes.</div>
+      </div>
+      <div class="series-card">
+        <div class="series-label">Series C</div>
+        <div class="series-name">"Dressed for the World"</div>
+        <div class="series-pillars">
+          <span class="series-pillar-tag" style="background:rgba(196,82,42,0.12); color:var(--fashion);">👗 Fashion</span>
+          <span class="series-pillar-tag" style="background:rgba(26,107,138,0.12); color:var(--travel);">🌍 Travel</span>
+        </div>
+        <div class="series-desc">Indian silhouettes abroad + budget styling at destinations + what she actually wore. Lives across Instagram and YouTube.</div>
+      </div>
+      <div class="series-card">
+        <div class="series-label">Series D</div>
+        <div class="series-name">"The Real Healing Era"</div>
+        <div class="series-pillars">
+          <span class="series-pillar-tag" style="background:rgba(123,79,142,0.12); color:var(--spiritual);">✨ Spiritual</span>
+          <span class="series-pillar-tag" style="background:rgba(212,144,58,0.12); color:var(--funny);">😂 Funny</span>
+        </div>
+        <div class="series-desc">Honest, witty documentation of what healing actually looks like — the journaling, the backsliding, the midnight snacks, the real growth.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     IDEAS
+════════════════════════════════════════════ -->
+<section class="ideas-section">
+  <div style="display:flex; align-items:baseline; gap:16px; margin-bottom:12px;">
+    <span style="font-size:10px; letter-spacing:0.3em; text-transform:uppercase; color:var(--muted);">72 Ideas</span>
+    <h2 style="font-family:'Playfair Display',serif; font-size:clamp(32px,4vw,50px); font-weight:700; color:var(--charcoal); line-height:1.1;">Pick your <em style="font-style:italic; color:var(--saffron);">next video</em></h2>
+  </div>
+  <p style="font-size:14px; color:var(--muted); margin-bottom:48px; line-height:1.6; max-width:600px;">Select any ideas below to build a custom content board. Download it as a high-quality image to share with your team or keep for reference.</p>
+
+  <div class="ideas-controls">
+    <div class="filter-tabs">
+      <button class="filter-tab active" data-cat="all">All · 72</button>
+      <button class="filter-tab" data-cat="spiritual">✨ Spiritual · 13</button>
+      <button class="filter-tab" data-cat="travel">🌍 Travel · 18</button>
+      <button class="filter-tab" data-cat="fashion">👗 Fashion · 17</button>
+      <button class="filter-tab" data-cat="funny">😂 Funny · 13</button>
+      <button class="filter-tab" data-cat="yoga">🧘 Yoga · 11</button>
+    </div>
+    <div class="selection-info">
+      <span class="selection-count">Selected: <strong id="count">0</strong></span>
+      <button class="select-all-btn" id="selectAllBtn" onclick="selectAll()">Select All Visible</button>
+    </div>
+  </div>
+
+  <!-- SPIRITUAL -->
+  <div class="category-block cat-spiritual" data-category="spiritual">
+    <div class="category-header">
+      <div class="category-emoji">✨</div>
+      <div class="category-title-wrap">
+        <h3>Spiritual</h3>
+        <div class="category-subtitle">Honest, grounded, genuinely hers</div>
+      </div>
+      <div class="category-count">13 ideas</div>
+    </div>
+    <div class="ideas-grid" id="spiritual-grid"></div>
+  </div>
+
+  <!-- TRAVEL -->
+  <div class="category-block cat-travel" data-category="travel">
+    <div class="category-header">
+      <div class="category-emoji">🌍</div>
+      <div class="category-title-wrap">
+        <h3>Solo Travel</h3>
+        <div class="category-subtitle">For the Indian woman the world told to stay home</div>
+      </div>
+      <div class="category-count">18 ideas</div>
+    </div>
+    <div class="ideas-grid" id="travel-grid"></div>
+  </div>
+
+  <!-- FASHION -->
+  <div class="category-block cat-fashion" data-category="fashion">
+    <div class="category-header">
+      <div class="category-emoji">👗</div>
+      <div class="category-title-wrap">
+        <h3>Fashion & Style</h3>
+        <div class="category-subtitle">Unapologetically stylish, culturally grounded</div>
+      </div>
+      <div class="category-count">17 ideas</div>
+    </div>
+    <div class="ideas-grid" id="fashion-grid"></div>
+  </div>
+
+  <!-- FUNNY -->
+  <div class="category-block cat-funny" data-category="funny">
+    <div class="category-header">
+      <div class="category-emoji">😂</div>
+      <div class="category-title-wrap">
+        <h3>Funny & Relatable</h3>
+        <div class="category-subtitle">The gap IS the content</div>
+      </div>
+      <div class="category-count">13 ideas</div>
+    </div>
+    <div class="ideas-grid" id="funny-grid"></div>
+  </div>
+
+  <!-- YOGA -->
+  <div class="category-block cat-yoga" data-category="yoga">
+    <div class="category-header">
+      <div class="category-emoji">🧘</div>
+      <div class="category-title-wrap">
+        <h3>Yoga & Wellness</h3>
+        <div class="category-subtitle">Real practice, not performative wellness</div>
+      </div>
+      <div class="category-count">11 ideas</div>
+    </div>
+    <div class="ideas-grid" id="yoga-grid"></div>
+  </div>
+</section>
+
+<!-- GENERATE BAR -->
+<div class="generate-bar" id="generateBar">
+  <div class="generate-bar-left">
+    <div class="generate-bar-count" id="barCount">0</div>
+    <div class="generate-bar-text">
+      <strong>Ideas Selected</strong>
+      Ready to generate your content board
+    </div>
+  </div>
+  <div class="generate-bar-actions">
+    <button class="btn-clear" onclick="clearAll()">Clear All</button>
+    <button class="btn-generate" onclick="generateImage()">
+      <span class="icon">⬇</span>
+      Download Content Board
+    </button>
+  </div>
+</div>
+
+<script>
+const IDEAS = {
+  spiritual: [
+    { title: '"I stopped performing spirituality. Here\'s what my actual practice looks like now."', desc: 'Raw, zero aesthetic. No glowing skin, no candles. Just real. Directly hits the "spiritual fraud" pain point.' },
+    { title: '"What 3 years of solo travel taught me about surrender that no spiritual book ever could"', desc: 'Travel IS her spiritual practice. Bridges pillars. Positions her as genuinely wise, not just quoting Rumi.' },
+    { title: '"I visited the same temple I went to as a child — I was a completely different person standing there"', desc: 'Deeply personal, culturally resonant for Indian women 22–38. High emotional pull and shareability.' },
+    { title: '"The day I got a \'sign\' I\'d been asking for — and then completely ignored it anyway"', desc: 'Relatable AND spiritual. The gap between knowing and doing. Audience will tag 10 people.' },
+    { title: '"Spirituality told me to let go. Anxiety said absolutely not. Here\'s how I\'m navigating both."', desc: 'Directly addresses toxic positivity in spiritual spaces. Honest, grounded, perfectly her tone.' },
+    { title: '"I asked strangers in Varanasi one question: \'What do you know that most people don\'t?\' — their answers destroyed me"', desc: 'Travel + spiritual mashup. Documentary-style storytelling. Strong hook, strong finish.' },
+    { title: '"Why I stopped calling myself spiritual — and what I call myself instead"', desc: 'Identity tension content. Provocative title, reflective payoff. High save rate potential.' },
+    { title: '"Manifesting my solo Japan trip: the exact journal entries, the doubt spirals, and what actually happened"', desc: 'Practical + mystical. Shows the process honestly — not just the "it worked!!" ending. Deeply trustworthy.' },
+    { title: '"Being spiritual AND ambitious AND fashionable AND Indian — the world hates this combination and I\'m doing it anyway"', desc: 'The thesis of her entire brand in one video. Potential landmark piece for the channel.' },
+    { title: '"What a solo trip to [sacred site] actually felt like — no filter, no glow, just what happened inside me"', desc: 'Pilgrimage content that isn\'t devotional content. Thoughtful, modern, entirely her lane.' },
+    { title: '"Disconnect to Reconnect: 72 Hours Without Tech in Bhutan / Himalayas / Coorg"', desc: 'Combine trekking with analog journaling and meditation. Spiritual detox travel format.', sourced: true },
+    { title: '"Lunar Yoga Series: Moon Phase-Aligned Practices — I tried this for a full month"', desc: '28-day experiment syncing flows with moon cycles. Bridges spiritual + yoga perfectly.', sourced: true },
+    { title: '"Hidden Destination: Tea Ceremonies & Meditation — what nobody tells you about the inner experience"', desc: 'Blend travel with mindfulness in iconic or underrated locations. Spiritual travel storytelling.', sourced: true }
+  ],
+  travel: [
+    { title: '"Things that ONLY happen to Indian solo female travelers abroad — accurate"', desc: 'Culturally specific, instantly shareable. The aunty questions, the "are you married?", the airport drama.' },
+    { title: '"I ate alone at restaurants for 7 days straight and documented every single moment"', desc: 'Directly tackles the "table for one" anxiety. Brave, simple, deeply relatable. Viral potential.' },
+    { title: '"How I actually afford solo travel — before I had 60K followers, when I had zero brand deals"', desc: 'Honest, practical, trust-building. Hits the "that life is for other people" wound directly.' },
+    { title: '"I said yes to every stranger\'s recommendation for 24 hours in [city]"', desc: 'High entertainment + genuine insight. Brave solo travel energy. Shows freedom, not recklessness.' },
+    { title: '"The first 6 hours in a new country alone: the real, unfiltered version"', desc: 'The wrong hostel, the lost baggage, the WhatsApp panic texts to mom. Real always beats perfect.' },
+    { title: '"Places in India that feel like a completely different country — under ₹500/day"', desc: 'Hyper-relevant for Indian audience who can\'t always travel internationally. Extremely shareable.' },
+    { title: '"I asked 10 Indian women what they thought about me traveling alone — their answers broke me"', desc: 'Social commentary wrapped in personal story. The generational tension is deeply rich material.' },
+    { title: '"The solo female travel safety system I actually use — not the list you\'ve read 50 times"', desc: 'Practical with personality. Addresses the #1 fear. Positions her as a trusted guide.' },
+    { title: '"My travel planning process when I\'m terrified — the night before every solo trip looks like this"', desc: 'Vulnerability + practical value. Makes the audience feel less alone in their fear.' },
+    { title: '"What I wish someone had told me before my first solo trip — to myself, 3 years ago"', desc: 'Letter format. Emotional, wise, deeply shareable. Works as Reel and as long-form YouTube.' },
+    { title: '"Sustainable Packing Guide: 10 Items for 30 Days in Southeast Asia"', desc: 'Eco-friendly fashion + wellness essentials for long-term travel. Practical and values-aligned.', sourced: true },
+    { title: '"Digital Nomad Diaries: Yoga Retreats with Remote Work Facilities"', desc: 'Feature coworking spaces in Bali/Rishikesh/Hampi with daily yoga sessions. New-format travel content.', sourced: true },
+    { title: '"Fashion Faux Pas Abroad: What NOT to Wear in Sacred Sites"', desc: 'Cultural sensitivity guide with modesty fashion alternatives. Bridges travel + fashion naturally.', sourced: true },
+    { title: '"Budget Travel Hack: Creating Luxury Looks with Thrifted Travel Wardrobes"', desc: 'Build 7 outfits under ₹2000 using local markets at the destination. Fashion meets frugal travel.', sourced: true },
+    { title: '"Floating Market Fashion: Styling Outfits That Actually Work for Thailand / Alleppey / Srinagar"', desc: 'Functional yet stylish looks for aquatic or outdoor market exploration. Unique visual content.', sourced: true },
+    { title: '"Post-Travel Reset: 7-Day Routine After Long Flights — Yoga + Wellness + Skin"', desc: 'Yoga flows + wellness habits to combat jet lag and re-regulate the body after long journeys.', sourced: true },
+    { title: '"In-Flight Routine for Glowing Skin and Zero Jet Lag: What I Actually Do"', desc: 'Step-by-step travel wellness routine featuring hydration, movement, and simple skincare.', sourced: true },
+    { title: '"How to Maintain Your Wellness Routine During Monsoon Travels in India"', desc: 'Humidity-proof yoga + wellness + skincare tips tailored for monsoon season travel in India.', sourced: true }
+  ],
+  fashion: [
+    { title: '"I wore only Indian silhouettes traveling through Europe for 10 days — people\'s reactions were something"', desc: 'Cultural identity + travel + fashion. A unique angle that only she owns in this space.' },
+    { title: '"Honest try-on: every popular Western \'aesthetic\' outfit on an actual Indian body"', desc: 'Cottagecore, clean girl, coastal grandmother — tested for real. Size-inclusive, honest, high engagement.' },
+    { title: '"Building a travel capsule wardrobe from Ajio/Myntra for under ₹3000 — I actually tested this"', desc: 'Practical, budget-aware, India-specific. The "luxury feels out of reach" pain point, solved.' },
+    { title: '"Spiritual girl fashion that doesn\'t look like you\'re permanently on a retreat"', desc: 'Her exact niche intersection. Nobody else is making this video. Her audience is waiting for it.' },
+    { title: '"What I planned to wear on my solo trip vs. what I actually wore — day by day"', desc: 'Real vs. curated. Funny + practical + relatable. Strong content structure that writes itself.' },
+    { title: '"I styled the same linen set 7 different ways across 7 days of travel — here\'s what worked"', desc: 'Packing + fashion + practical. High save rate. Works perfectly as carousel AND reel.' },
+    { title: '"Dressing for yourself when your family thinks you\'re \'too much\'"', desc: 'Fashion meets identity. The woman who wants to wear the bold outfit but gets comments at home.' },
+    { title: '"Honest fashion brand reviews: 10 Indian brands you keep seeing on Instagram — I tried them all"', desc: 'High trust content. Her audience is desperate for non-paid, genuine reviews of affordable Indian brands.' },
+    { title: '"How I dress when I\'m feeling spiritually chaotic — fashion as a mood regulation tool"', desc: 'Fresh angle. Fashion + wellness intersection that feels genuinely and uniquely hers.' },
+    { title: '"The fashion mistakes I made my first year of solo travel — and what I pack now instead"', desc: 'Story-driven, practical, self-deprecating humor. Earns trust by being honest about the fails.' },
+    { title: '"2025 Trend Lab: I Tested 3 Controversial Microtrends So You Don\'t Have To"', desc: 'Review current trends with her honest lens. High watch time, strong opinion-based content.', sourced: true },
+    { title: '"Size-Inclusive Travel Capsule: 14 Pieces That Work for Every Body Shape"', desc: 'Universal styling tricks for diverse figures. Body-positive, practical, deeply shareable.', sourced: true },
+    { title: '"Climate-Adaptive Fashion: How to Pack for Destinations That Go from Cold to Hot"', desc: 'Test layering and technical fabrics for mixed-climate travel. Practical and visually interesting.', sourced: true },
+    { title: '"Festival Fashion with Full Coverage: Diwali / Navratri / Events — Style Without Compromise"', desc: 'Culturally-sensitive, festive, modest-yet-stylish outfits. Perfectly timed for festive seasons.', sourced: true },
+    { title: '"Wardrobe Archaeology: Why 90s and Y2K Trends Keep Coming Back — and How to Wear Them Now"', desc: 'Compare archival pieces with 2025 reinterpretations. Trend analysis meets personal style.', sourced: true },
+    { title: '"Anti-Theft Travel Fashion: How I Modified My Clothes with Hidden Pockets"', desc: 'Modify existing clothes with security features for solo travel. Fashion meets female safety.', sourced: true },
+    { title: '"Upcycle Challenge: I Turned Old Yoga Gear and Dupatta Fabric into Travel Bags"', desc: 'Sustainable DIY project using items she already owns. Bridges yoga + fashion + sustainability.', sourced: true }
+  ],
+  funny: [
+    { title: '"POV: You\'re in your healing era but you\'ve watched 63 travel vlogs and haven\'t booked a single flight"', desc: 'This is basically her audience\'s entire personality. Instant caption-worthy moment.' },
+    { title: '"How to look like a confident solo traveler when you\'re actually texting your mom every 45 minutes"', desc: 'Deeply true. Funny on the surface, touching underneath. The best kind of relatable content.' },
+    { title: '"Explaining solo travel to an Indian family — a documentary"', desc: 'Dialogue format. Telugu aunty energy. "But who will take your photos?" "What if you get kidnapped?"' },
+    { title: '"My spiritual morning routine (5 AM, golden light, journaling) vs. what actually happens"', desc: 'The gap IS the content. Alarm goes off 6 times. Journaling is two words. Still in bed at 9.' },
+    { title: '"I planned the perfect solo trip. The trip had other plans. A story in 5 parts."', desc: 'Classic travel fail format structured like a short film. Each "part" is a new disaster.' },
+    { title: '"Rating my solo travel disasters from \'mild inconvenience\' to \'I actually cried at the airport\'"', desc: 'Tier list format performs incredibly on Reels. Funny + real + brave for showing the lows.' },
+    { title: '"Things yoga instructors say vs. what they actually mean"', desc: '"Find your edge." "Honor your body." "Just breathe into it." Her audience has SUFFERED through this.' },
+    { title: '"The solo trip planning timeline: Day 1 excited, Day 14 paralysed, Day 30 still on the couch with 47 tabs open"', desc: 'Pacing humor. Painfully accurate. Makes people DM "are you spying on me?"' },
+    { title: '"Manifesting for 3 days then stress-eating at midnight: a spiritual journey"', desc: 'The relapse from the "healing era" is the most relatable thing she can post. No guilt. Just truth.' },
+    { title: '"Signs you\'ve been following travel creators for 2 years but have zero passport stamps to show for it"', desc: 'Roast-style but delivered with love. Her audience will tag themselves AND their friends.' },
+    { title: '"Post-Party Recovery Yoga: I Did This the Morning After a Wedding. Documenting Everything."', desc: 'Detox twists and funny commentary the morning after a big night. Yoga meets real life.', sourced: true },
+    { title: '"Office Chair Yoga: I Did Stealth Stretches During Work Calls for a Week — Nobody Noticed"', desc: 'Discreet poses during Zoom meetings. Relatable for the 9-to-5 audience dreaming of travel freedom.', sourced: true },
+    { title: '"Buying a \'Capsule Wardrobe\' and Immediately Breaking Every Single Rule — A Documentary"', desc: 'The gap between Pinterest wardrobe planning and actual chaotic shopping behavior. Deeply funny.' }
+  ],
+  yoga: [
+    { title: '"Yoga for people who are \'bad at yoga\' — 15 minutes, no pretending, no perfect poses"', desc: 'Directly dismantles the "I\'m not flexible enough" barrier. Huge entry-point video for new followers.' },
+    { title: '"I did yoga in the most ridiculous locations during my solo trip — here\'s what happened"', desc: 'Train platforms, tiny hostels, windy hilltops. Visual, funny, shows yoga as a travel companion.' },
+    { title: '"The 5-minute yoga sequence I do before every flight — it actually fixes travel anxiety"', desc: 'Ultra-practical. High save rate. Positions yoga as a life tool, not just a wellness aesthetic.' },
+    { title: '"Yin yoga for overthinkers: the practice I do when my brain won\'t stop and my body won\'t rest"', desc: 'Specific audience, specific problem, specific solution. Her wellness + spirituality lane perfectly.' },
+    { title: '"I took a yoga class in [foreign country] not speaking the language — full experience"', desc: 'Fish-out-of-water humor + yoga + travel. The chaos of not understanding cues. Deeply watchable.' },
+    { title: '"What 2 years of daily yoga actually changed — honest answer, not the aesthetic one"', desc: '"My skin didn\'t glow. I didn\'t lose 10 kilos. Here\'s what actually shifted." Truth-telling builds trust.' },
+    { title: '"Yoga at sunrise in [location] — but let me be real about what that morning actually looked like"', desc: 'Behind the beautiful shot. Woke up late, couldn\'t find the spot, mosquitoes everywhere.' },
+    { title: '"The yoga poses that got me through my worst travel anxiety — done in airport departure halls"', desc: 'Bridges yoga + solo travel fear. Deeply practical. For the audience terrified to fly solo.' },
+    { title: '"How I built a yoga practice that works when I\'m never in the same city twice"', desc: 'Her most personal yoga content angle. Nobody else can make this video. Entirely hers.' },
+    { title: '"Yoga teacher told me to \'find my edge\' — I found it and it was deeply humiliating"', desc: 'Specific, funny, but with a real ending about what she learned. Perfect blend of her tone.' },
+    { title: '"Altitude Adjustment Yoga: Breathing Techniques for Himalayan Treks — Tested at Altitude"', desc: 'Pre-climb preparation routines for mountain destinations. Yoga meets adventure travel.', sourced: true }
+  ]
+};
+
+const COLORS = {
+  spiritual: '#7B4F8E',
+  travel: '#1A6B8A',
+  fashion: '#C4522A',
+  funny: '#D4903A',
+  yoga: '#2E7D5E'
+};
+
+const EMOJIS = { spiritual: '✨', travel: '🌍', fashion: '👗', funny: '😂', yoga: '🧘' };
+const LABELS = { spiritual: 'Spiritual', travel: 'Solo Travel', fashion: 'Fashion', funny: 'Funny & Relatable', yoga: 'Yoga & Wellness' };
+
+let selected = new Set();
+let currentFilter = 'all';
+
+// Build idea cards
+function buildIdeas() {
+  Object.entries(IDEAS).forEach(([cat, ideas]) => {
+    const grid = document.getElementById(`${cat}-grid`);
+    ideas.forEach((idea, i) => {
+      const card = document.createElement('div');
+      card.className = 'idea-card';
+      card.dataset.id = `${cat}-${i}`;
+      card.dataset.cat = cat;
+      card.onclick = () => toggleCard(card, `${cat}-${i}`);
+
+      card.innerHTML = `
+        <div class="idea-checkbox"></div>
+        <div class="idea-content">
+          <div class="idea-number">${EMOJIS[cat]} #${String(i+1).padStart(2,'0')}</div>
+          <div class="idea-title">${idea.title}</div>
+          <div class="idea-desc">${idea.desc}</div>
+        </div>
+        ${idea.sourced ? '<span class="idea-badge sourced">Research</span>' : ''}
+      `;
+      grid.appendChild(card);
+    });
+  });
+}
+
+function toggleCard(card, id) {
+  if (selected.has(id)) {
+    selected.delete(id);
+    card.classList.remove('selected');
+  } else {
+    selected.add(id);
+    card.classList.add('selected');
+  }
+  updateCount();
+}
+
+function updateCount() {
+  const n = selected.size;
+  document.getElementById('count').textContent = n;
+  document.getElementById('barCount').textContent = n;
+  const bar = document.getElementById('generateBar');
+  if (n > 0) bar.classList.add('visible');
+  else bar.classList.remove('visible');
+}
+
+function clearAll() {
+  selected.clear();
+  document.querySelectorAll('.idea-card.selected').forEach(c => c.classList.remove('selected'));
+  updateCount();
+}
+
+function selectAll() {
+  const visible = document.querySelectorAll('.category-block:not(.hidden) .idea-card');
+  visible.forEach(card => {
+    const id = card.dataset.id;
+    selected.add(id);
+    card.classList.add('selected');
+  });
+  updateCount();
+}
+
+// Filter
+document.querySelectorAll('.filter-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentFilter = tab.dataset.cat;
+
+    document.querySelectorAll('.category-block').forEach(block => {
+      if (currentFilter === 'all' || block.dataset.category === currentFilter) {
+        block.classList.remove('hidden');
+      } else {
+        block.classList.add('hidden');
+      }
+    });
+  });
+});
+
+// Generate Image
+function generateImage() {
+  if (selected.size === 0) return;
+
+  const loading = document.getElementById('loading');
+  loading.classList.add('active');
+
+  // Build export div
+  const exportDiv = document.createElement('div');
+  exportDiv.style.cssText = `
+    position: fixed; top: -9999px; left: -9999px;
+    width: 1200px; background: #FAF5EF;
+    font-family: 'DM Sans', sans-serif; padding: 60px;
+    box-sizing: border-box;
+  `;
+
+  // Header
+  exportDiv.innerHTML = `
+    <div style="background: #1A4A4A; padding: 48px; border-radius: 20px; margin-bottom: 40px; position: relative; overflow: hidden;">
+      <div style="position:absolute; top:-60px; right:-60px; width:200px; height:200px; background:rgba(212,168,83,0.1); border-radius:50%;"></div>
+      <div style="font-size:11px; letter-spacing:0.3em; text-transform:uppercase; color:rgba(212,168,83,0.8); margin-bottom:12px;">✦ Sahithi — Content Board</div>
+      <div style="font-family:'Playfair Display',serif; font-size:44px; font-weight:900; color:white; line-height:0.95; margin-bottom:16px;">Selected <span style="font-style:italic; color:#D4A853;">Ideas</span></div>
+      <div style="font-size:14px; color:rgba(255,255,255,0.5); font-style:italic;">${selected.size} video ideas across ${[...new Set([...selected].map(id => id.split('-')[0]))].length} content pillars</div>
+    </div>
+  `;
+
+  // Group by category
+  const grouped = {};
+  selected.forEach(id => {
+    const [cat, idx] = id.split('-');
+    if (!grouped[cat]) grouped[cat] = [];
+    grouped[cat].push(IDEAS[cat][parseInt(idx)]);
+  });
+
+  Object.entries(grouped).forEach(([cat, catIdeas]) => {
+    const color = COLORS[cat];
+    const sec = document.createElement('div');
+    sec.style.marginBottom = '32px';
+    sec.innerHTML = `
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px; padding-bottom:12px; border-bottom:2px solid ${color}22;">
+        <div style="font-size:18px; width:38px; height:38px; background:${color}18; border-radius:8px; display:flex; align-items:center; justify-content:center;">${EMOJIS[cat]}</div>
+        <div>
+          <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:#1C1C1C;">${LABELS[cat]}</div>
+          <div style="font-size:11px; color:#7A6E65;">${catIdeas.length} idea${catIdeas.length>1?'s':''} selected</div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        ${catIdeas.map((idea, i) => `
+          <div style="background:white; border:1.5px solid ${color}40; border-radius:12px; padding:18px; border-left:4px solid ${color};">
+            <div style="font-size:10px; font-weight:600; letter-spacing:0.12em; color:${color}; margin-bottom:8px; text-transform:uppercase;">${EMOJIS[cat]} Idea</div>
+            <div style="font-size:13px; font-weight:600; color:#1C1C1C; line-height:1.45; margin-bottom:8px;">${idea.title}</div>
+            <div style="font-size:11px; color:#7A6E65; line-height:1.55;">${idea.desc}</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    exportDiv.appendChild(sec);
+  });
+
+  // Footer
+  const footer = document.createElement('div');
+  footer.style.cssText = 'margin-top:32px; padding-top:20px; border-top:1px solid #E8D9CC; display:flex; justify-content:space-between; align-items:center;';
+  footer.innerHTML = `
+    <div style="font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:#1A4A4A;">Sahithi</div>
+    <div style="font-size:11px; color:#7A6E65; letter-spacing:0.1em;">CONTENT BOARD · ${new Date().toLocaleDateString('en-IN', {year:'numeric',month:'long',day:'numeric'})}</div>
+  `;
+  exportDiv.appendChild(footer);
+  document.body.appendChild(exportDiv);
+
+  setTimeout(() => {
+    html2canvas(exportDiv, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#FAF5EF',
+      width: 1200,
+      logging: false
+    }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `Sahithi-Content-Board-${Date.now()}.png`;
+      link.href = canvas.toDataURL('image/png', 1.0);
+      link.click();
+      document.body.removeChild(exportDiv);
+      loading.classList.remove('active');
+    }).catch(() => {
+      document.body.removeChild(exportDiv);
+      loading.classList.remove('active');
+      alert('Image generation failed. Please try again.');
+    });
+  }, 300);
+}
+
+buildIdeas();
+</script>
+</body>
+</html>
