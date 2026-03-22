@@ -42,29 +42,30 @@
 </head>
 <body class="bg-slate-950 text-slate-200 antialiased overflow-x-hidden">
 
+    <!-- Navigation (Universal) -->
+    <nav class="fixed w-full z-50 glass top-0 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 md:h-20">
+                <div class="flex items-center">
+                    <a href="#" onclick="showView('landing')" class="text-xl md:text-2xl font-bold tracking-tighter text-white hover:text-blue-400 transition-colors">
+                        d/dx Media
+                    </a>
+                </div>
+                <div class="hidden lg:flex space-x-8">
+                    <a href="#" onclick="showView('community')" class="hover:text-blue-400 transition">Community</a>
+                    <a href="#" onclick="showLandingSection('services')" class="hover:text-blue-400 transition">Services</a>
+                    <a href="#" onclick="showView('portfolio')" class="hover:text-blue-400 transition">Case Studies</a>
+                    <a href="#" onclick="showView('clients')" class="hover:text-blue-400 transition">Clients</a>
+                </div>
+                <button onclick="showView('onboarding')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 md:px-6 py-2 rounded-full font-medium transition shadow-lg shadow-blue-500/20 text-sm md:text-base">
+                    Get Started
+                </button>
+            </div>
+        </div>
+    </nav>
+
     <!-- Main Landing View -->
     <div id="landing-page">
-        <!-- Navigation -->
-        <nav class="fixed w-full z-50 glass top-0 transition-all duration-300">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between items-center h-16 md:h-20">
-                    <div class="flex items-center">
-                        <a href="#" onclick="showView('landing')" class="text-xl md:text-2xl font-bold tracking-tighter text-white hover:text-blue-400 transition-colors">
-                            d/dx Media
-                        </a>
-                    </div>
-                    <div class="hidden lg:flex space-x-8">
-                        <a href="#community" class="hover:text-blue-400 transition">Community</a>
-                        <a href="#services" class="hover:text-blue-400 transition">Services</a>
-                        <a href="#about" class="hover:text-blue-400 transition">Case Studies</a>
-                        <a href="#testimonials" class="hover:text-blue-400 transition">Clients</a>
-                    </div>
-                    <button onclick="showView('onboarding')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 md:px-6 py-2 rounded-full font-medium transition shadow-lg shadow-blue-500/20 text-sm md:text-base">
-                        Get Started
-                    </button>
-                </div>
-            </div>
-        </nav>
 
         <!-- Hero Section -->
         <section class="relative pt-24 pb-16 md:pt-48 md:pb-32 hero-pattern overflow-hidden">
@@ -79,9 +80,9 @@
                     <button onclick="showView('onboarding')" class="bg-white text-slate-950 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition text-center min-w-[200px] active:scale-95">
                         Book a Free Audit
                     </button>
-                    <a href="#about" class="glass text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition flex items-center justify-center gap-2 min-w-[200px] active:scale-95">
+                    <button onclick="showView('portfolio')" class="glass text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-white/10 transition flex items-center justify-center gap-2 min-w-[200px] active:scale-95">
                         View Portfolio <i data-lucide="arrow-right" class="w-5 h-5"></i>
-                    </a>
+                    </button>
                 </div>
             </div>
         </section>
@@ -164,6 +165,284 @@
                 </div>
             </div>
         </section>
+    </div>
+
+    <!-- Portfolio / Case Studies Page -->
+    <div id="portfolio-page" class="view-hidden min-h-screen hero-pattern pt-24 pb-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
+                <div>
+                    <button onclick="showView('landing')" class="text-slate-400 hover:text-white flex items-center gap-2 mb-4 transition">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home
+                    </button>
+                    <h2 class="text-4xl md:text-5xl font-bold text-white">Our Case Studies</h2>
+                    <p class="text-slate-400 mt-2">Real results for professionals and growing brands.</p>
+                </div>
+                <button onclick="showView('onboarding')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition shadow-lg shadow-blue-500/20 active:scale-95 self-start md:self-center">
+                    Book Your Result
+                </button>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Case Study 1 -->
+                <div class="glass rounded-3xl overflow-hidden border border-white/10 group">
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-500/20 text-blue-400 text-xs font-bold px-3 py-1 rounded-full border border-blue-500/20">Professionals Talk</span>
+                            <span class="text-slate-500 text-xs">FinTech Sector</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Building Authority for a Lead Consultant</h3>
+                        <p class="text-slate-400 mb-8">How we used our 'Done For You' vertical video system to turn technical expertise into a lead-generating engine on LinkedIn and TikTok.</p>
+                        
+                        <div class="grid grid-cols-3 gap-4 p-6 bg-slate-900/50 rounded-2xl border border-white/5">
+                            <div>
+                                <div class="text-2xl font-bold text-white">4.2M</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Total Views</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">12k+</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">New Leads</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">320%</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">ROI</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case Study 2 -->
+                <div class="glass rounded-3xl overflow-hidden border border-white/10 group">
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-purple-500/20 text-purple-400 text-xs font-bold px-3 py-1 rounded-full border border-purple-500/20">Social Media Mgmt</span>
+                            <span class="text-slate-500 text-xs">D2C Brand</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Scaling Community for a Lifestyle Label</h3>
+                        <p class="text-slate-400 mb-8">Strategic content pillars and community engagement that moved the needle from 'posting for likes' to 'posting for profit'.</p>
+                        
+                        <div class="grid grid-cols-3 gap-4 p-6 bg-slate-900/50 rounded-2xl border border-white/5">
+                            <div>
+                                <div class="text-2xl font-bold text-white">85k</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Followers</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">14%</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Engagement</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">5x</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Sales Growth</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case Study 3 -->
+                <div class="glass rounded-3xl overflow-hidden border border-white/10 group">
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-pink-500/20 text-pink-400 text-xs font-bold px-3 py-1 rounded-full border border-pink-500/20">Paid Performance</span>
+                            <span class="text-slate-500 text-xs">E-Commerce</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Aggressive Meta Ads Optimization</h3>
+                        <p class="text-slate-400 mb-8">Reducing CPA while scaling daily spend by 400% through iterative creative testing and data-led targeting.</p>
+                        
+                        <div class="grid grid-cols-3 gap-4 p-6 bg-slate-900/50 rounded-2xl border border-white/5">
+                            <div>
+                                <div class="text-2xl font-bold text-white">6.2x</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">ROAS</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">-45%</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">CPA Drop</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">$1.2M</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Ad Rev.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case Study 4 -->
+                <div class="glass rounded-3xl overflow-hidden border border-white/10 group">
+                    <div class="p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <span class="bg-blue-400/20 text-blue-300 text-xs font-bold px-3 py-1 rounded-full border border-blue-400/20">Digital Marketing</span>
+                            <span class="text-slate-500 text-xs">B2B SaaS</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-4">Omni-channel Growth Strategy</h3>
+                        <p class="text-slate-400 mb-8">A holistic approach combining SEO, content, and paid channels to dominate the market share for a niche SaaS product.</p>
+                        
+                        <div class="grid grid-cols-3 gap-4 p-6 bg-slate-900/50 rounded-2xl border border-white/5">
+                            <div>
+                                <div class="text-2xl font-bold text-white">Top 3</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">SEO Rank</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">2.5x</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Traffic</div>
+                            </div>
+                            <div>
+                                <div class="text-2xl font-bold text-white">18%</div>
+                                <div class="text-[10px] text-slate-500 uppercase tracking-wider">Conv. Rate</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Page -->
+    <div id="community-page" class="view-hidden min-h-screen hero-pattern pt-24 pb-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
+                <div>
+                    <button onclick="showView('landing')" class="text-slate-400 hover:text-white flex items-center gap-2 mb-4 transition">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home
+                    </button>
+                    <h2 class="text-4xl md:text-5xl font-bold text-white">The d/dx Community</h2>
+                    <p class="text-slate-400 text-xl max-w-3xl mt-2">We don't just manage accounts; we build self-sustaining ecosystems where creators and brands connect.</p>
+                </div>
+                <button onclick="showView('onboarding')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition shadow-lg shadow-blue-500/20 active:scale-95 self-start md:self-center">
+                    Get Started
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+                <!-- Creator Collective -->
+                <div class="glass p-8 rounded-3xl border border-white/10">
+                    <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="zap" class="text-blue-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Creator Collective</h3>
+                    <p class="text-slate-400 text-sm">Access to our inner circle of 500+ micro-influencers and high-authority creators ready for collaboration.</p>
+                </div>
+                <!-- Weekly Deep Dives -->
+                <div class="glass p-8 rounded-3xl border border-white/10">
+                    <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="book-open" class="text-purple-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Weekly Deep Dives</h3>
+                    <p class="text-slate-400 text-sm">Exclusive algorithm updates and meta-strategy reports delivered to our partners every Monday morning.</p>
+                </div>
+                <!-- Engagement Pods -->
+                <div class="glass p-8 rounded-3xl border border-white/10">
+                    <div class="w-12 h-12 bg-pink-500/10 rounded-xl flex items-center justify-center mb-6">
+                        <i data-lucide="message-square" class="text-pink-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-4">Engagement Pods</h3>
+                    <p class="text-slate-400 text-sm">Vetted engagement networks that ensure your most important content gets the initial boost it deserves.</p>
+                </div>
+            </div>
+
+            <!-- Community Impact Stats -->
+            <div class="glass p-8 md:p-12 rounded-3xl border border-white/10 text-center">
+                <h3 class="text-2xl font-bold text-white mb-4">Our Community Impact</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-8">
+                    <div>
+                        <div class="text-3xl font-bold text-blue-400">12M+</div>
+                        <div class="text-xs text-slate-500 uppercase mt-1 tracking-widest">Network Reach</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-purple-400">50k+</div>
+                        <div class="text-xs text-slate-500 uppercase mt-1 tracking-widest">Daily Comments</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-pink-400">92%</div>
+                        <div class="text-xs text-slate-500 uppercase mt-1 tracking-widest">Retention Rate</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-bold text-white">24/7</div>
+                        <div class="text-xs text-slate-500 uppercase mt-1 tracking-widest">Live Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Clients / Testimonials Page -->
+    <div id="clients-page" class="view-hidden min-h-screen hero-pattern pt-24 pb-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12">
+                <div>
+                    <button onclick="showView('landing')" class="text-slate-400 hover:text-white flex items-center gap-2 mb-4 transition">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home
+                    </button>
+                    <h2 class="text-4xl md:text-5xl font-bold text-white">Client Success</h2>
+                    <p class="text-slate-400 text-xl max-w-3xl mt-2">Don't take our word for it. Here is what industry leaders say about working with d/dx Media.</p>
+                </div>
+                <button onclick="showView('onboarding')" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition shadow-lg shadow-blue-500/20 active:scale-95 self-start md:self-center">
+                    Join Our Client List
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                <!-- Client 1 -->
+                <div class="glass p-8 rounded-3xl border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-yellow-500 mb-6">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-slate-300 italic mb-8 leading-relaxed">"Their 'Professionals Talk' strategy completely rebranded my online presence. I'm now getting inbound leads from Fortune 500 companies weekly."</p>
+                    </div>
+                    <div class="flex items-center gap-4 border-t border-white/5 pt-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full"></div>
+                        <div>
+                            <div class="text-white font-bold">Mark Stevenson</div>
+                            <div class="text-xs text-slate-500">Managing Partner, MS Consulting</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Client 2 -->
+                <div class="glass p-8 rounded-3xl border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-yellow-500 mb-6">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-slate-300 italic mb-8 leading-relaxed">"The community management at d/dx is world-class. Our brand feels alive, and the engagement rate has skyrocketed since handover."</p>
+                    </div>
+                    <div class="flex items-center gap-4 border-t border-white/5 pt-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full"></div>
+                        <div>
+                            <div class="text-white font-bold">Helena Rivera</div>
+                            <div class="text-xs text-slate-500">CMO, Luma Wellness</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Client 3 -->
+                <div class="glass p-8 rounded-3xl border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex text-yellow-500 mb-6">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                        </div>
+                        <p class="text-slate-300 italic mb-8 leading-relaxed">"A true ROI-focused agency. They don't just report on likes; they report on revenue and conversions. Highly recommended."</p>
+                    </div>
+                    <div class="flex items-center gap-4 border-t border-white/5 pt-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-red-500 rounded-full"></div>
+                        <div>
+                            <div class="text-white font-bold">Jordan Blake</div>
+                            <div class="text-xs text-slate-500">Founder, Blake Ventures</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Onboarding Page (Get Started New Page) -->
@@ -256,20 +535,32 @@
             goals: "entry.270372905"     
         };
 
+        function showLandingSection(sectionId) {
+            showView('landing');
+            setTimeout(() => {
+                const el = document.getElementById(sectionId);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }, 50);
+        }
+
         function showView(view) {
-            const landing = document.getElementById('landing-page');
-            const onboarding = document.getElementById('onboarding-page');
-            
+            const allViews = ['landing-page', 'portfolio-page', 'community-page', 'clients-page', 'onboarding-page'];
+            allViews.forEach(id => document.getElementById(id).classList.add('view-hidden'));
+
             if (view === 'onboarding') {
-                landing.classList.add('view-hidden');
-                onboarding.classList.remove('view-hidden');
-                window.scrollTo(0,0);
-            } else {
-                landing.classList.remove('view-hidden');
-                onboarding.classList.add('view-hidden');
+                document.getElementById('onboarding-page').classList.remove('view-hidden');
                 document.getElementById('onboarding-form-container').classList.remove('view-hidden');
                 document.getElementById('onboarding-success').classList.add('view-hidden');
+            } else if (view === 'portfolio') {
+                document.getElementById('portfolio-page').classList.remove('view-hidden');
+            } else if (view === 'community') {
+                document.getElementById('community-page').classList.remove('view-hidden');
+            } else if (view === 'clients') {
+                document.getElementById('clients-page').classList.remove('view-hidden');
+            } else {
+                document.getElementById('landing-page').classList.remove('view-hidden');
             }
+            window.scrollTo(0, 0);
         }
 
         async function handleOnboarding(e) {
