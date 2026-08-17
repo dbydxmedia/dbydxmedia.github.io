@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Content Calendar - Delicious Kitchen & Aashna Boutique</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      
+      --dk-color: #f97316;
+      --dk-bg: rgba(249, 115, 22, 0.15);
+      --dk-border: rgba(249, 115, 22, 0.4);
+      
+      --ab-color: #ec4899;
+      --ab-bg: rgba(236, 72, 153, 0.15);
+      --ab-border: rgba(236, 72, 153, 0.4);
+      
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 32px 24px;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .header-title h1 {
+      margin: 0;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-title p {
+      margin: 6px 0 0 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Controls Bar */
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 12px 20px;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-buttons, .filter-buttons {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      background: #0f172a;
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn:hover {
+      background: var(--card-border);
+      border-color: #475569;
+    }
+
+    .btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .month-indicator {
+      font-size: 1.15rem;
+      font-weight: 700;
+      min-width: 160px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    /* Calendar Grid */
+    .calendar-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      padding: 24px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+      margin-bottom: 28px;
+    }
+
+    .cal-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .cal-table th {
+      padding: 12px 4px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .cal-table td {
+      height: 90px;
+      vertical-align: top;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 8px;
+      background: rgba(15, 23, 42, 0.4);
+      transition: background 0.2s ease;
+    }
+
+    .cal-table td:hover {
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .cal-table td.empty {
+      background: rgba(15, 23, 42, 0.1);
+      border-color: transparent;
+    }
+
+    .day-num {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    /* Video Badges inside Calendar */
+    .event-badge {
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      line-height: 1.2;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .event-dk {
+      background: var(--dk-bg);
+      color: var(--dk-color);
+      border-left: 3px solid var(--dk-color);
+      border-top: 1px solid var(--dk-border);
+      border-right: 1px solid var(--dk-border);
+      border-bottom: 1px solid var(--dk-border);
+    }
+
+    .event-ab {
+      background: var(--ab-bg);
+      color: var(--ab-color);
+      border-left: 3px solid var(--ab-color);
+      border-top: 1px solid var(--ab-border);
+      border-right: 1px solid var(--ab-border);
+      border-bottom: 1px solid var(--ab-border);
+    }
+
+    .event-badge.hidden {
+      display: none !important;
+    }
+
+    /* Queue Table */
+    .queue-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid var(--card-border);
+      padding: 24px;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+    }
+
+    .queue-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 18px 0;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .queue-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .queue-table th {
+      background: rgba(15, 23, 42, 0.6);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .queue-table td {
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .queue-table tr.hidden {
+      display: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .badge-dk {
+      background: var(--dk-bg);
+      color: var(--dk-color);
+      border: 1px solid var(--dk-border);
+    }
+
+    .badge-ab {
+      background: var(--ab-bg);
+      color: var(--ab-color);
+      border: 1px solid var(--ab-border);
+    }
+
+    .editable {
+      outline: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      transition: background 0.2s;
+    }
+
+    .editable:hover, .editable:focus {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Month View Switching */
+    .month-view {
+      display: none;
+    }
+
+    .month-view.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div class="header-title">
+      <h1>Content Calendar Dashboard</h1>
+      <p>Alternating Video Publishing Strategy • 2 Videos / Week / Brand</p>
+    </div>
+  </div>
+
+  <!-- Controls Bar -->
+  <div class="controls-bar">
+    <!-- Month Navigation -->
+    <div class="nav-buttons">
+      <button class="btn" id="prevBtn" onclick="changeMonth(-1)">‹ Prev</button>
+      <div class="month-indicator" id="monthLabel">August 2026</div>
+      <button class="btn" id="nextBtn" onclick="changeMonth(1)">Next ›</button>
+    </div>
+
+    <!-- Brand Filter Buttons -->
+    <div class="filter-buttons">
+      <button class="btn active" id="filter-all" onclick="setFilter('all')">All Brands</button>
+      <button class="btn" id="filter-dk" onclick="setFilter('dk')">🍳 Delicious Kitchen</button>
+      <button class="btn" id="filter-ab" onclick="setFilter('ab')">👗 Aashna Boutique</button>
+    </div>
+  </div>
+
+  <!-- Main Calendar View -->
+  <div class="calendar-card">
+    <!-- AUGUST VIEW -->
+    <div id="view-august" class="month-view active">
+      <table class="cal-table">
+        <thead>
+          <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td>
+            <td><div class="day-num">1</div></td>
+          </tr>
+          <tr>
+            <td><div class="day-num">2</div></td><td><div class="day-num">3</div></td><td><div class="day-num">4</div></td>
+            <td><div class="day-num">5</div></td><td><div class="day-num">6</div></td><td><div class="day-num">7</div></td><td><div class="day-num">8</div></td>
+          </tr>
+          <tr>
+            <td><div class="day-num">9</div></td><td><div class="day-num">10</div></td><td><div class="day-num">11</div></td>
+            <td><div class="day-num">12</div></td><td><div class="day-num">13</div></td><td><div class="day-num">14</div></td><td><div class="day-num">15</div></td>
+          </tr>
+          <tr>
+            <td><div class="day-num">16</div></td><td><div class="day-num">17</div></td><td><div class="day-num">18</div></td><td><div class="day-num">19</div></td>
+            <td>
+              <div class="day-num">20</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 1</div>
+            </td>
+            <td><div class="day-num">21</div></td>
+            <td>
+              <div class="day-num">22</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 1</div>
+            </td>
+          </tr>
+          <tr>
+            <td><div class="day-num">23</div></td>
+            <td>
+              <div class="day-num">24</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 2</div>
+            </td>
+            <td><div class="day-num">25</div></td>
+            <td>
+              <div class="day-num">26</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 2</div>
+            </td>
+            <td><div class="day-num">27</div></td>
+            <td>
+              <div class="day-num">28</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 3</div>
+            </td>
+            <td><div class="day-num">29</div></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="day-num">30</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 3</div>
+            </td>
+            <td><div class="day-num">31</div></td>
+            <td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td><td class="empty"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SEPTEMBER VIEW -->
+    <div id="view-september" class="month-view">
+      <table class="cal-table">
+        <thead>
+          <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="empty"></td><td class="empty"></td>
+            <td>
+              <div class="day-num">1</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 4</div>
+            </td>
+            <td><div class="day-num">2</div></td>
+            <td>
+              <div class="day-num">3</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 4</div>
+            </td>
+            <td><div class="day-num">4</div></td>
+            <td>
+              <div class="day-num">5</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 5</div>
+            </td>
+          </tr>
+          <tr>
+            <td><div class="day-num">6</div></td>
+            <td>
+              <div class="day-num">7</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 5</div>
+            </td>
+            <td><div class="day-num">8</div></td>
+            <td>
+              <div class="day-num">9</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 6</div>
+            </td>
+            <td><div class="day-num">10</div></td>
+            <td>
+              <div class="day-num">11</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 6</div>
+            </td>
+            <td><div class="day-num">12</div></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="day-num">13</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 7</div>
+            </td>
+            <td><div class="day-num">14</div></td>
+            <td>
+              <div class="day-num">15</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 7</div>
+            </td>
+            <td><div class="day-num">16</div></td>
+            <td>
+              <div class="day-num">17</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 8</div>
+            </td>
+            <td><div class="day-num">18</div></td>
+            <td>
+              <div class="day-num">19</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 8</div>
+            </td>
+          </tr>
+          <tr>
+            <td><div class="day-num">20</div></td>
+            <td>
+              <div class="day-num">21</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 9</div>
+            </td>
+            <td><div class="day-num">22</div></td>
+            <td>
+              <div class="day-num">23</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 9</div>
+            </td>
+            <td><div class="day-num">24</div></td>
+            <td>
+              <div class="day-num">25</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 10</div>
+            </td>
+            <td><div class="day-num">26</div></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="day-num">27</div>
+              <div class="event-badge event-ab brand-ab">AB - Video 10</div>
+            </td>
+            <td><div class="day-num">28</div></td>
+            <td>
+              <div class="day-num">29</div>
+              <div class="event-badge event-dk brand-dk">DK - Video 11</div>
+            </td>
+            <td><div class="day-num">30</div></td>
+            <td class="empty"></td><td class="empty"></td><td class="empty"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Queue Details -->
+  <div class="queue-card">
+    <div class="queue-title">
+      <span>Video Schedule & Caption Planner</span>
+      <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 400;">Click topic fields to edit</span>
+    </div>
+    <table class="queue-table">
+      <thead>
+        <tr>
+          <th style="width: 15%;">Date</th>
+          <th style="width: 25%;">Brand</th>
+          <th style="width: 15%;">Ref Code</th>
+          <th style="width: 45%;">Video Topic / Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="queue-row brand-dk month-august"><td>Aug 20, 2026</td><td><span class="badge badge-dk">Delicious Kitchen</span></td><td><strong>DK - Video 1</strong></td><td class="editable" contenteditable="true">Recipe Reel: Quick 15-Min Dinner Idea</td></tr>
+        <tr class="queue-row brand-ab month-august"><td>Aug 22, 2026</td><td><span class="badge badge-ab">Aashna Boutique</span></td><td><strong>AB - Video 1</strong></td><td class="editable" contenteditable="true">New Arrival Showcase: Weekend Festive Wear</td></tr>
+        <tr class="queue-row brand-dk month-august"><td>Aug 24, 2026</td><td><span class="badge badge-dk">Delicious Kitchen</span></td><td><strong>DK - Video 2</strong></td><td class="editable" contenteditable="true">Kitchen Tip: Prep Secrets for Busy Weeks</td></tr>
+        <tr class="queue-row brand-ab month-august"><td>Aug 26, 2026</td><td><span class="badge badge-ab">Aashna Boutique</span></td><td><strong>AB - Video 2</strong></td><td class="editable" contenteditable="true">Styling Reel: How to Accessories Sarees</td></tr>
+        <tr class="queue-row brand-dk month-august"><td>Aug 28, 2026</td><td><span class="badge badge-dk">Delicious Kitchen</span></td><td><strong>DK - Video 3</strong></td><td class="editable" contenteditable="true">Weekend Dessert Special Recipe</td></tr>
+        <tr class="queue-row brand-ab month-august"><td>Aug 30, 2026</td><td><span class="badge badge-ab">Aashna Boutique</span></td><td><strong>AB - Video 3</strong></td><td class="editable" contenteditable="true">Customer Spotlight & Lookbook</td></tr>
+        
+        <tr class="queue-row brand-dk month-september hidden"><td>Sep 01, 2026</td><td><span class="badge badge-dk">Delicious Kitchen</span></td><td><strong>DK - Video 4</strong></td><td class="editable" contenteditable="true">Monthly Special Dish Reveal</td></tr>
+        <tr class="queue-row brand-ab month-september hidden"><td>Sep 03, 2026</td><td><span class="badge badge-ab">Aashna Boutique</span></td><td><strong>AB - Video 4</strong></td><td class="editable" contenteditable="true">Trending Colors of the Season</td></tr>
+        <tr class="queue-row brand-dk month-september hidden"><td>Sep 05, 2026</td><td><span class="badge badge-dk">Delicious Kitchen</span></td><td><strong>DK - Video 5</strong></td><td class="editable" contenteditable="true">Healthy Breakfast Options</td></tr>
+        <tr class="queue-row brand-ab month-september hidden"><td>Sep 07, 2026</td><td><span class="badge badge-ab">Aashna Boutique</span></td><td><strong>AB - Video 5</strong></td><td class="editable" contenteditable="true">Ethnic Casual Outfit Ideas</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  let currentMonthIndex = 0; // 0 = August, 1 = September
+  let currentFilter = 'all'; // 'all', 'dk', 'ab'
+
+  const months = [
+    { name: 'August 2026', id: 'august' },
+    { name: 'September 2026', id: 'september' }
+  ];
+
+  function updateView() {
+    // 1. Update Month Display
+    document.getElementById('monthLabel').innerText = months[currentMonthIndex].name;
+    
+    // Toggle Month Calendar Views
+    document.getElementById('view-august').classList.toggle('active', currentMonthIndex === 0);
+    document.getElementById('view-september').classList.toggle('active', currentMonthIndex === 1);
+
+    // Disable/Enable Nav Buttons at bounds
+    document.getElementById('prevBtn').style.opacity = currentMonthIndex === 0 ? '0.4' : '1';
+    document.getElementById('nextBtn').style.opacity = currentMonthIndex === 1 ? '0.4' : '1';
+
+    // 2. Filter Elements
+    applyFilters();
+  }
+
+  function changeMonth(direction) {
+    const newIndex = currentMonthIndex + direction;
+    if (newIndex >= 0 && newIndex < months.length) {
+      currentMonthIndex = newIndex;
+      updateView();
+    }
+  }
+
+  function setFilter(brand) {
+    currentFilter = brand;
+    
+    // Update Filter Button States
+    document.getElementById('filter-all').classList.toggle('active', brand === 'all');
+    document.getElementById('filter-dk').classList.toggle('active', brand === 'dk');
+    document.getElementById('filter-ab').classList.toggle('active', brand === 'ab');
+
+    applyFilters();
+  }
+
+  function applyFilters() {
+    // Filter Badges in Calendar
+    const allBadges = document.querySelectorAll('.event-badge');
+    allBadges.forEach(badge => {
+      if (currentFilter === 'all') {
+        badge.classList.remove('hidden');
+      } else if (currentFilter === 'dk') {
+        badge.classList.toggle('hidden', !badge.classList.contains('brand-dk'));
+      } else if (currentFilter === 'ab') {
+        badge.classList.toggle('hidden', !badge.classList.contains('brand-ab'));
+      }
+    });
+
+    // Filter Table Rows by active Month and active Brand Filter
+    const activeMonthId = months[currentMonthIndex].id;
+    const allRows = document.querySelectorAll('.queue-row');
+
+    allRows.forEach(row => {
+      const isCorrectMonth = row.classList.contains(`month-${activeMonthId}`);
+      let isCorrectBrand = true;
+
+      if (currentFilter === 'dk') {
+        isCorrectBrand = row.classList.contains('brand-dk');
+      } else if (currentFilter === 'ab') {
+        isCorrectBrand = row.classList.contains('brand-ab');
+      }
+
+      if (isCorrectMonth && isCorrectBrand) {
+        row.classList.remove('hidden');
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+  }
+
+  // Initial Load
+  updateView();
+</script>
+
+</body>
+</html>
