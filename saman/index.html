@@ -43,6 +43,12 @@
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
 
+    // =========================================================================
+    // 🔗 PASTE YOUR PUBLISHED GOOGLE SHEET CSV LINK BELOW:
+    // (Example: "https://docs.google.com/spreadsheets/d/e/.../pub?output=csv")
+    // =========================================================================
+    const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQCl73MUJKc8dQAWkLvb6IsnzldgD7fbM7bi8dFEfSJL7oW4M7UdKRimAmcDhA7K09QA5pYm2MHR8lS/pub?gid=0&single=true&output=csv";
+
     // Sound Synthesizer via Web Audio API
     class SoundFx {
       constructor() {
@@ -97,7 +103,7 @@
     }
     const sound = new SoundFx();
 
-    // Default Grocery Items
+    // Fallback Default Grocery Items
     const DEFAULT_ITEMS = [
       { id: '1', name: 'Whole Milk', category: 'Dairy', imageUrl: 'https://images.unsplash.com/photo-1563636619-e9143da7973b?auto=format&fit=crop&w=600&q=80' },
       { id: '2', name: 'Farm Fresh Eggs', category: 'Dairy & Eggs', imageUrl: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=600&q=80' },
@@ -145,6 +151,41 @@
         } catch(e) {}
         return DEFAULT_ITEMS;
       });
+
+      // 📥 AUTO-SYNC WITH GOOGLE SHEETS CSV
+      useEffect(() => {
+        if (!GOOGLE_SHEET_CSV_URL || GOOGLE_SHEET_CSV_URL.includes("PASTE_YOUR_GOOGLE_SHEET")) return;
+        
+        fetch(GOOGLE_SHEET_CSV_URL)
+          .then(res => res.text())
+          .then(csvText => {
+            const lines = csvText.split(/\r?\n/).filter(line => line.trim().length > 0);
+            if (lines.length <= 1) return; // Only header
+
+            // Parse CSV lines (Column A: Name, Column B: Image URL, Column C: Category)
+            const parsed = lines.slice(1).map((line, idx) => {
+              // Basic CSV split supporting quoted strings
+              const parts = line.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(s => s.trim().replace(/^"|"$/g, ''));
+              const name = parts[0];
+              const imageUrl = parts[1] || 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80';
+              const category = parts[2] || 'Groceries';
+
+              if (!name) return null;
+              return {
+                id: 'sheet-' + idx,
+                name: name,
+                imageUrl: imageUrl,
+                category: category
+              };
+            }).filter(Boolean);
+
+            if (parsed.length > 0) {
+              setItems(parsed);
+              localStorage.setItem('saman_items', JSON.stringify(parsed));
+            }
+          })
+          .catch(err => console.log('Google Sheets fetch skipped:', err));
+      }, []);
 
       const [selectedItems, setSelectedItems] = useState(() => {
         try {
