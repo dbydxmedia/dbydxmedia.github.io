@@ -1,0 +1,6 @@
+{
+  "name": "Saman App",
+  "description": "Visual grocery item swiper and fast WhatsApp grocery list generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
