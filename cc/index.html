@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Media Content Calendar • Live Sync</title>
+  <meta name="description" content="Live synced social media content calendar for Delicious Kitchen and Aashna Boutique." />
+
+  <!-- Google Fonts: Instrument Serif, JetBrains Mono, Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            editorial: ['Instrument Serif', 'Georgia', 'serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            accent: '#D4FF00',
+            dk: '#FF8A00',
+            ab: '#FF2E93',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React 18, ReactDOM, Babel, & PapaParse -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0C0C0C;
+      --accent: #D4FF00;
+      --font-sans: 'Plus Jakarta Sans', sans-serif;
+      --font-serif: 'Instrument Serif', Georgia, serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    body {
+      background-color: #0C0C0C;
+      color: #FFFFFF;
+      font-family: var(--font-sans);
+      letter-spacing: -0.01em;
+    }
+    .font-editorial {
+      font-family: var(--font-serif);
+    }
+    .font-mono-tag {
+      font-family: var(--font-mono);
+    }
+    .pulse-dot {
+      box-shadow: 0 0 10px #D4FF00;
+    }
+    .pulse-green {
+      box-shadow: 0 0 10px #44FF44;
+    }
+    .glow-accent {
+      box-shadow: 0 0 20px rgba(212, 255, 0, 0.15);
+    }
+    .glow-dk {
+      box-shadow: 0 0 20px rgba(255, 138, 0, 0.15);
+    }
+    .glow-ab {
+      box-shadow: 0 0 20px rgba(255, 46, 147, 0.15);
+    }
+  </style>
+</head>
+<body class="bg-[#0C0C0C] text-[#FFFFFF] antialiased selection:bg-[#D4FF00] selection:text-black min-h-screen">
+  <div id="root"></div>
+
+  <!-- Main Application Script (Babel compiled) -->
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useCallback } = React;
+
+    const DEFAULT_SHEET_CSV_URL =
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQd4BHCd6wb7vI_EzCaaa-CC2gz20d0HPHN6Xihu9A4ZEcDUFE7ablULFiII2GU8nNQvXrD3rkMkpAm/pub?gid=0&single=true&output=csv';
+
+    const GOOGLE_SHEET_VIEW_URL =
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQd4BHCd6wb7vI_EzCaaa-CC2gz20d0HPHN6Xihu9A4ZEcDUFE7ablULFiII2GU8nNQvXrD3rkMkpAm/pubhtml';
+
+    const FALLBACK_CSV = `Date,Content Idea,Status,Brand
+8/20/2026,Pesarulu Video,Posted,Delicious Kitchen
+8/22/2026,3 Frocks Video ,Edited,Aashna Boutique
+8/24/2026,,,Delicious Kitchen
+8/26/2026,,,Aashna Boutique
+8/28/2026,,,Delicious Kitchen
+8/30/2026,,,Aashna Boutique
+9/1/2026,,,Delicious Kitchen
+9/3/2026,,,Aashna Boutique
+9/5/2026,,,Delicious Kitchen
+9/7/2026,,,Aashna Boutique
+9/9/2026,,,Delicious Kitchen
+9/11/2026,,,Aashna Boutique
+9/13/2026,,,Delicious Kitchen
+9/15/2026,,,Aashna Boutique
+9/17/2026,,,Delicious Kitchen
+9/19/2026,,,Aashna Boutique
+9/21/2026,,,Delicious Kitchen
+9/23/2026,,,Aashna Boutique
+9/25/2026,,,Delicious Kitchen
+9/27/2026,,,Aashna Boutique
+9/29/2026,,,Delicious Kitchen
+10/1/2026,,,Aashna Boutique
+10/3/2026,,,Delicious Kitchen`;
+
+    // SVG Icons
+    const Icons = {
+      Utensils: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2" /><path d="M12 2v20" /><path d="M18 10v12" /><path d="M6 2v6a3 3 0 0 0 3 3 3 3 0 0 0 3-3V2" />
+        </svg>
+      ),
+      Sparkle: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+        </svg>
+      ),
+      Clock: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+        </svg>
+      ),
+      RefreshCw: ({ className, ...props }) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
+          <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/>
+        </svg>
+      ),
+      FileSpreadsheet: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M8 13h2"/><path d="M14 13h2"/><path d="M8 17h2"/><path d="M14 17h2"/>
+        </svg>
+      ),
+      CheckCircle2: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/>
+        </svg>
+      ),
+      Scissors: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>
+        </svg>
+      ),
+      HelpCircle: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>
+        </svg>
+      ),
+      Filter: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+        </svg>
+      ),
+      Search: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+        </svg>
+      ),
+      Calendar: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+        </svg>
+      ),
+      Columns2: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M12 3v18"/>
+        </svg>
+      ),
+      List: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/>
+        </svg>
+      ),
+      ChevronLeft: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      ),
+      ChevronRight: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      ),
+      Moon: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+      ),
+      Info: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+        </svg>
+      ),
+      Copy: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
+        </svg>
+      ),
+      Check: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      ),
+      ShieldCheck: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/>
+        </svg>
+      ),
+      TrendingUp: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+        </svg>
+      ),
+      Layers: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 12.5-9.17 4.16a2 2 0 0 1-1.66 0L2 12.5"/><path d="m22 17.5-9.17 4.16a2 2 0 0 1-1.66 0L2 17.5"/>
+        </svg>
+      ),
+      X: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+        </svg>
+      ),
+      Hash: (props) => (
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" {...props}>
+          <line x1="4" x2="20" y1="9" y2="9"/><line x1="4" x2="20" y1="15" y2="15"/><line x1="10" x2="8" y1="3" y2="21"/><line x1="16" x2="14" y1="3" y2="21"/>
+        </svg>
+      )
+    };
+
+    function determineBrandKey(brandStr, refCode = '') {
+      const lower = (brandStr || '').toLowerCase();
+      const lowerRef = (refCode || '').toLowerCase();
+      if (lower.includes('delicious') || lower.includes('kitchen') || lowerRef.startsWith('dk')) return 'dk';
+      if (lower.includes('aashna') || lower.includes('boutique') || lowerRef.startsWith('ab')) return 'ab';
+      return 'other';
+    }
+
+    function parseDateString(dateStr) {
+      if (!dateStr || typeof dateStr !== 'string') return null;
+      const trimmed = dateStr.trim();
+      if (!trimmed) return null;
+      const parts = trimmed.split(/[\/\-]/);
+      if (parts.length === 3) {
+        if (parts[0].length === 4) {
+          const y = parseInt(parts[0], 10);
+          const m = parseInt(parts[1], 10) - 1;
+          const d = parseInt(parts[2], 10);
+          if (!isNaN(y) && !isNaN(m) && !isNaN(d)) return new Date(y, m, d);
+        } else {
+          const m = parseInt(parts[0], 10) - 1;
+          const d = parseInt(parts[1], 10);
+          const y = parseInt(parts[2], 10);
+          if (!isNaN(y) && !isNaN(m) && !isNaN(d)) return new Date(y, m, d);
+        }
+      }
+      const parsed = new Date(trimmed);
+      return isNaN(parsed.getTime()) ? null : parsed;
+    }
+
+    function parseEventsFromCSV(csvText) {
+      const result = Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: 'greedy',
+        transformHeader: (header) => header.trim(),
+      });
+
+      const rows = result.data;
+      const rawEvents = [];
+
+      for (const row of rows) {
+        const keys = Object.keys(row);
+        const dateKey = keys.find((k) => /^date/i.test(k));
+        const brandKeyCol = keys.find((k) => /^brand/i.test(k));
+        const contentKey = keys.find((k) => /content|idea|topic|title|caption/i.test(k));
+        const statusKey = keys.find((k) => /^status/i.test(k));
+        const notesKey = keys.find((k) => /note|desc|comment/i.test(k));
+
+        const dateStr = (dateKey ? row[dateKey] : Object.values(row)[0] || '').trim();
+        if (!dateStr) continue;
+
+        const dateObj = parseDateString(dateStr);
+        if (!dateObj) continue;
+
+        const brand = (brandKeyCol ? row[brandKeyCol] : '').trim() || 'Unassigned';
+        const contentIdea = (contentKey ? row[contentKey] : '').trim();
+        const status = (statusKey ? row[statusKey] : '').trim() || 'Planned';
+        const notes = (notesKey ? row[notesKey] : '').trim();
+
+        rawEvents.push({
+          dateObj,
+          dateStr,
+          brand,
+          brandKey: determineBrandKey(brand),
+          contentIdea,
+          status,
+          notes,
+          rawRow: row,
+        });
+      }
+
+      rawEvents.sort((a, b) => a.dateObj.getTime() - b.dateObj.getTime());
+
+      const brandCounters = { dk: 0, ab: 0, other: 0 };
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayNamesShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+      const events = rawEvents.map((item, idx) => {
+        const bKey = item.brandKey;
+        brandCounters[bKey] = (brandCounters[bKey] || 0) + 1;
+        const count = brandCounters[bKey];
+
+        let refPrefix = 'POST';
+        if (bKey === 'dk') refPrefix = 'DK';
+        else if (bKey === 'ab') refPrefix = 'AB';
+
+        const refCode = `${refPrefix} - Video ${count}`;
+        const dayOfWeek = dayNames[item.dateObj.getDay()];
+        const dayOfWeekShort = dayNamesShort[item.dateObj.getDay()];
+        const monthName = monthNames[item.dateObj.getMonth()];
+        const formattedDate = `${dayOfWeekShort}, ${monthName.slice(0, 3)} ${item.dateObj.getDate()}, ${item.dateObj.getFullYear()}`;
+
+        let normalizedStatus = item.status || 'Planned';
+        if (!item.contentIdea && normalizedStatus.toLowerCase() === 'planned') {
+          normalizedStatus = 'Idea Needed';
+        }
+
+        return {
+          id: `event-${item.dateObj.getTime()}-${idx}`,
+          dateStr: item.dateStr,
+          formattedDate,
+          dateObj: item.dateObj,
+          year: item.dateObj.getFullYear(),
+          month: item.dateObj.getMonth(),
+          day: item.dateObj.getDate(),
+          dayOfWeek,
+          dayOfWeekShort,
+          brand: item.brand,
+          brandKey: item.brandKey,
+          refCode,
+          videoNumber: count,
+          contentIdea: item.contentIdea,
+          status: normalizedStatus,
+          notes: item.notes,
+        };
+      });
+
+      const monthsMap = new Map();
+      for (const event of events) {
+        const key = `${event.year}-${event.month}`;
+        const monthName = monthNames[event.month];
+        const label = `${monthName} ${event.year}`;
+
+        if (!monthsMap.has(key)) {
+          monthsMap.set(key, {
+            key,
+            year: event.year,
+            month: event.month,
+            label,
+            monthName,
+            totalEvents: 0,
+            dkCount: 0,
+            abCount: 0,
+            postedCount: 0,
+            editedCount: 0,
+            plannedCount: 0,
+            emptyCount: 0,
+          });
+        }
+
+        const meta = monthsMap.get(key);
+        meta.totalEvents++;
+        if (event.brandKey === 'dk') meta.dkCount++;
+        if (event.brandKey === 'ab') meta.abCount++;
+
+        const statusLower = (event.status || '').toLowerCase();
+        if (statusLower === 'posted') meta.postedCount++;
+        else if (statusLower === 'edited') meta.editedCount++;
+        else if (!event.contentIdea) meta.emptyCount++;
+        else meta.plannedCount++;
+      }
+
+      const months = Array.from(monthsMap.values()).sort((a, b) => {
+        if (a.year !== b.year) return a.year - b.year;
+        return a.month - b.month;
+      });
+
+      return { events, months };
+    }
+
+    async function fetchLiveSheetData(csvUrl = DEFAULT_SHEET_CSV_URL) {
+      try {
+        const separator = csvUrl.includes('?') ? '&' : '?';
+        const cacheBusterUrl = `${csvUrl}${separator}_t=${Date.now()}`;
+        const response = await fetch(cacheBusterUrl, {
+          method: 'GET',
+          headers: { Accept: 'text/csv, text/plain, */*' },
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+        const text = await response.text();
+        if (!text || text.trim().length === 0 || text.includes('Temporary Redirect')) {
+          throw new Error('Received empty or redirect response');
+        }
+
+        const { events, months } = parseEventsFromCSV(text);
+        if (events.length === 0) throw new Error('No valid events parsed');
+
+        return { events, months, fetchedAt: new Date(), isFallback: false };
+      } catch (error) {
+        console.warn('Google Sheet live fetch fallback applied:', error);
+        const { events, months } = parseEventsFromCSV(FALLBACK_CSV);
+        return { events, months, fetchedAt: new Date(), isFallback: true };
+      }
+    }
+
+    /* Event Card Component */
+    function EventCard({ event, onClick, compact = false }) {
+      const isDK = event.brandKey === 'dk';
+      const isAB = event.brandKey === 'ab';
+
+      const getStatusBadge = (status) => {
+        const s = (status || '').toLowerCase();
+        if (s.includes('posted')) {
+          return (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-mono-tag font-bold uppercase tracking-wider bg-[#102414] text-[#44FF44] border border-[#225522]">
+              <Icons.CheckCircle2 className="w-2.5 h-2.5" />
+              <span>POSTED</span>
+            </span>
+          );
+        }
+        if (s.includes('edited')) {
+          return (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-mono-tag font-bold uppercase tracking-wider bg-[#14202c] text-[#00E5FF] border border-[#1d425c]">
+              <Icons.Scissors className="w-2.5 h-2.5" />
+              <span>EDITED</span>
+            </span>
+          );
+        }
+        if (s.includes('idea') || s.includes('needed') || !event.contentIdea) {
+          return (
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-mono-tag font-bold uppercase tracking-wider bg-[#26200c] text-[#D4FF00] border border-[#4d4414] animate-pulse">
+              <Icons.HelpCircle className="w-2.5 h-2.5" />
+              <span>NEED IDEA</span>
+            </span>
+          );
+        }
+        return (
+          <span className="inline-flex items-center gap-1 px-1.5 py-0.5 text-[9px] font-mono-tag font-bold uppercase tracking-wider bg-[#1a1a1a] text-[#888888] border border-[#333333]">
+            <Icons.Clock className="w-2.5 h-2.5 text-[#D4FF00]" />
+            <span>PLANNED</span>
+          </span>
+        );
+      };
+
+      if (compact) {
+        return (
+          <div
+            onClick={onClick}
+            className={`group p-2 border transition-all cursor-pointer select-none text-left relative overflow-hidden ${
+              isDK ? 'bg-[#181818] border-[#332211] hover:border-[#FF8A00] hover:bg-[#201a14]' : isAB ? 'bg-[#181818] border-[#331122] hover:border-[#FF2E93] hover:bg-[#20141c]' : 'bg-[#181818] border-[#2A2A2A] hover:border-[#D4FF00]'
+            }`}
+          >
+            <div className={`absolute left-0 top-0 bottom-0 w-1 ${isDK ? 'bg-[#FF8A00]' : isAB ? 'bg-[#FF2E93]' : 'bg-[#D4FF00]'}`} />
+            <div className="pl-1.5 space-y-1">
+              <div className="flex items-center justify-between gap-1">
+                <span className={`text-[9px] font-mono-tag font-bold uppercase tracking-wider px-1 py-0.5 ${
+                  isDK ? 'bg-[#2a1a0c] text-[#FF8A00] border border-[#442a10]' : isAB ? 'bg-[#2a0c1a] text-[#FF2E93] border border-[#44102a]' : 'bg-[#222222] text-[#888888]'
+                }`}>
+                  {event.refCode}
+                </span>
+                {getStatusBadge(event.status)}
+              </div>
+              <p className="text-xs font-medium text-[#FFFFFF] line-clamp-2 group-hover:text-[#D4FF00] transition leading-tight">
+                {event.contentIdea || <span className="italic text-[#666666] font-normal">+ Enter content in sheet</span>}
+              </p>
+              <div className="text-[10px] font-mono-tag text-[#888888] flex items-center justify-between truncate pt-0.5 uppercase tracking-wider">
+                <span className="truncate flex items-center gap-1">
+                  {isDK ? <Icons.Utensils className="w-2.5 h-2.5 text-[#FF8A00] shrink-0" /> : <Icons.Sparkle className="w-2.5 h-2.5 text-[#FF2E93] shrink-0" />}
+                  {event.brand}
+                </span>
+                <span className="text-[#555555]">#{event.videoNumber}</span>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      return (
+        <div
+          onClick={onClick}
+          className={`group p-3 border transition-all duration-200 cursor-pointer select-none text-left relative overflow-hidden ${
+            isDK ? 'bg-[#181818] border-[#332211] hover:border-[#FF8A00] hover:bg-[#1f1912]' : isAB ? 'bg-[#181818] border-[#331122] hover:border-[#FF2E93] hover:bg-[#1f121a]' : 'bg-[#181818] border-[#2A2A2A] hover:border-[#D4FF00]'
+          }`}
+        >
+          <div className={`absolute left-0 top-0 bottom-0 w-1 ${isDK ? 'bg-[#FF8A00]' : isAB ? 'bg-[#FF2E93]' : 'bg-[#D4FF00]'}`} />
+          <div className="pl-2 space-y-2">
+            <div className="flex items-center justify-between gap-1 flex-wrap">
+              <div className="flex items-center gap-1.5 font-mono-tag">
+                {isDK ? (
+                  <span className="p-0.5 bg-[#2a1a0c] text-[#FF8A00] border border-[#442a10]"><Icons.Utensils className="w-3 h-3" /></span>
+                ) : isAB ? (
+                  <span className="p-0.5 bg-[#2a0c1a] text-[#FF2E93] border border-[#44102a]"><Icons.Sparkle className="w-3 h-3" /></span>
+                ) : null}
+                <span className="text-[11px] font-bold tracking-wider text-white">{event.refCode}</span>
+              </div>
+              {getStatusBadge(event.status)}
+            </div>
+            <h4 className="text-xs sm:text-[13px] font-semibold text-[#FFFFFF] group-hover:text-[#D4FF00] line-clamp-2 leading-snug transition">
+              {event.contentIdea || <span className="text-[#666666] italic font-normal">Topic pending in Google Sheet</span>}
+            </h4>
+            <div className="flex items-center justify-between text-[10px] font-mono-tag text-[#888888] pt-1.5 border-t border-[#262626] uppercase tracking-wider">
+              <span className="truncate">{event.brand}</span>
+              <span className="text-[#D4FF00]">VOL #{event.videoNumber}</span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* Month Calendar Grid */
+    function MonthCalendarGrid({ monthMeta, events, brandFilter, onSelectEvent }) {
+      const year = monthMeta.year;
+      const month = monthMeta.month;
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const prevMonthDays = new Date(year, month, 0).getDate();
+      const dayHeaders = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+
+      const today = new Date();
+      const isCurrentMonthActual = today.getFullYear() === year && today.getMonth() === month;
+      const actualTodayDate = today.getDate();
+
+      const eventsByDay = useMemo(() => {
+        const map = new Map();
+        for (const event of events) {
+          if (event.year === year && event.month === month) {
+            if (brandFilter !== 'all' && event.brandKey !== brandFilter) continue;
+            const d = event.day;
+            if (!map.has(d)) map.set(d, []);
+            map.get(d).push(event);
+          }
+        }
+        return map;
+      }, [events, year, month, brandFilter]);
+
+      const totalCells = Math.ceil((firstDayIndex + daysInMonth) / 7) * 7;
+      const cells = [];
+
+      for (let i = 0; i < totalCells; i++) {
+        if (i < firstDayIndex) {
+          const prevDayNum = prevMonthDays - (firstDayIndex - i - 1);
+          cells.push(
+            <div key={`prev-${i}`} className="min-h-[110px] sm:min-h-[125px] p-2 bg-[#0C0C0C]/50 border border-[#1A1A1A] opacity-25 select-none flex flex-col justify-between">
+              <span className="text-xs font-mono-tag font-bold text-[#555555]">{prevDayNum}</span>
+            </div>
+          );
+        } else if (i < firstDayIndex + daysInMonth) {
+          const dayNum = i - firstDayIndex + 1;
+          const dayEvents = eventsByDay.get(dayNum) || [];
+          const isToday = isCurrentMonthActual && dayNum === actualTodayDate;
+          const hasEvents = dayEvents.length > 0;
+
+          cells.push(
+            <div
+              key={`day-${dayNum}`}
+              className={`min-h-[115px] sm:min-h-[140px] p-2 sm:p-2.5 border transition-all flex flex-col justify-between relative group ${
+                isToday ? 'bg-[#181818] border-[#D4FF00] glow-accent ring-1 ring-[#D4FF00]' : hasEvents ? 'bg-[#181818] border-[#262626] hover:border-[#3A3A3A]' : 'bg-[#121212] border-[#1E1E1E] hover:border-[#282828]'
+              }`}
+            >
+              <div className="flex items-center justify-between gap-1 mb-1.5 font-mono-tag">
+                <span className={`text-xs sm:text-sm font-bold px-1.5 py-0.2 ${isToday ? 'bg-[#D4FF00] text-black font-black' : hasEvents ? 'text-white bg-[#222222]' : 'text-[#555555]'}`}>
+                  {dayNum < 10 ? `0${dayNum}` : dayNum}
+                </span>
+                {isToday && <span className="text-[9px] uppercase font-bold tracking-widest text-[#D4FF00]">TODAY</span>}
+                {!hasEvents && (
+                  <span className="text-[9px] text-[#444444] font-medium flex items-center gap-1">
+                    <Icons.Moon className="w-2.5 h-2.5" />
+                    <span className="hidden xl:inline uppercase">REST</span>
+                  </span>
+                )}
+              </div>
+
+              <div className="space-y-1.5 flex-1 flex flex-col justify-start">
+                {hasEvents ? (
+                  dayEvents.map((event) => (
+                    <EventCard key={event.id} event={event} onClick={() => onSelectEvent(event)} compact />
+                  ))
+                ) : (
+                  <div className="h-full flex items-center justify-center py-2">
+                    <div className="text-[10px] font-mono-tag text-[#3A3A3A] uppercase tracking-wider text-center select-none">
+                      NO POST
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        } else {
+          const nextDayNum = i - (firstDayIndex + daysInMonth) + 1;
+          cells.push(
+            <div key={`next-${i}`} className="min-h-[110px] sm:min-h-[125px] p-2 bg-[#0C0C0C]/50 border border-[#1A1A1A] opacity-25 select-none flex flex-col justify-between">
+              <span className="text-xs font-mono-tag font-bold text-[#555555]">{nextDayNum < 10 ? `0${nextDayNum}` : nextDayNum}</span>
+            </div>
+          );
+        }
+      }
+
+      return (
+        <div className="w-full bg-[#141414] border border-[#262626] p-3 sm:p-5">
+          <div className="grid grid-cols-7 gap-1.5 sm:gap-2 mb-2 sm:mb-2.5 font-mono-tag">
+            {dayHeaders.map((day, idx) => (
+              <div
+                key={day}
+                className={`text-center py-1.5 text-[11px] font-bold uppercase tracking-wider border ${
+                  idx === 0 || idx === 6 ? 'bg-[#181818] text-[#888888] border-[#222222]' : 'bg-[#0C0C0C] text-[#D4FF00] border-[#262626]'
+                }`}
+              >
+                {day}
+              </div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-1.5 sm:gap-2">{cells}</div>
+
+          <div className="mt-4 pt-3 border-t border-[#222222] flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] font-mono-tag text-[#888888] uppercase tracking-wider">
+            <div className="flex items-center gap-2">
+              <Icons.Info className="w-3.5 h-3.5 text-[#D4FF00] shrink-0" />
+              <span>
+                CADENCE: <strong className="text-white">2 VIDEOS / WEEK PER ACCOUNT</strong> (NO DAY COLLISION)
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1.5 text-[#FF8A00] font-bold">
+                <span className="w-2 h-2 bg-[#FF8A00]"></span> DELICIOUS KITCHEN
+              </span>
+              <span className="flex items-center gap-1.5 text-[#FF2E93] font-bold">
+                <span className="w-2 h-2 bg-[#FF2E93]"></span> AASHNA BOUTIQUE
+              </span>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* Queue Table */
+    function QueueTable({ events, activeMonthMeta, brandFilter, onSelectEvent }) {
+      const [filterByActiveMonthOnly, setFilterByActiveMonthOnly] = useState(false);
+      const [copiedId, setCopiedId] = useState(null);
+
+      const filteredEvents = useMemo(() => {
+        return events.filter((e) => {
+          if (brandFilter !== 'all' && e.brandKey !== brandFilter) return false;
+          if (filterByActiveMonthOnly && (e.year !== activeMonthMeta.year || e.month !== activeMonthMeta.month)) return false;
+          return true;
+        });
+      }, [events, brandFilter, filterByActiveMonthOnly, activeMonthMeta]);
+
+      const handleCopy = (e, ev) => {
+        e.stopPropagation();
+        const text = `${ev.brand} | ${ev.refCode}\nDate: ${ev.formattedDate}\nTopic: ${ev.contentIdea || 'TBD'}\nStatus: ${ev.status}`;
+        navigator.clipboard.writeText(text);
+        setCopiedId(ev.id);
+        setTimeout(() => setCopiedId(null), 2000);
+      };
+
+      const getStatusBadge = (status, hasIdea) => {
+        const s = (status || '').toLowerCase();
+        if (s.includes('posted')) {
+          return (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono-tag font-bold uppercase tracking-wider bg-[#102414] text-[#44FF44] border border-[#225522]">
+              <Icons.CheckCircle2 className="w-2.5 h-2.5" />
+              <span>POSTED</span>
+            </span>
+          );
+        }
+        if (s.includes('edited')) {
+          return (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono-tag font-bold uppercase tracking-wider bg-[#14202c] text-[#00E5FF] border border-[#1d425c]">
+              <Icons.Scissors className="w-2.5 h-2.5" />
+              <span>EDITED</span>
+            </span>
+          );
+        }
+        if (s.includes('idea') || !hasIdea) {
+          return (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono-tag font-bold uppercase tracking-wider bg-[#26200c] text-[#D4FF00] border border-[#4d4414] animate-pulse">
+              <Icons.HelpCircle className="w-2.5 h-2.5" />
+              <span>IDEA NEEDED</span>
+            </span>
+          );
+        }
+        return (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[9px] font-mono-tag font-bold uppercase tracking-wider bg-[#181818] text-[#888888] border border-[#333333]">
+            <Icons.Clock className="w-2.5 h-2.5 text-[#D4FF00]" />
+            <span>PLANNED</span>
+          </span>
+        );
+      };
+
+      return (
+        <div className="w-full bg-[#141414] border border-[#262626] p-4 sm:p-6 space-y-4 font-mono-tag">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#262626]">
+            <div>
+              <h3 className="text-sm sm:text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <span>PRODUCTION QUEUE</span>
+                <span className="text-[10px] font-bold px-2 py-0.5 bg-[#D4FF00] text-black">
+                  {filteredEvents.length} ITEMS
+                </span>
+              </h3>
+              <p className="text-[11px] text-[#888888] mt-0.5 uppercase tracking-wide">
+                LIVE SYNCHRONIZATION WITH CLOUD SPREADSHEET
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap text-xs">
+              <button
+                onClick={() => setFilterByActiveMonthOnly(!filterByActiveMonthOnly)}
+                className={`px-3 py-1.5 uppercase font-bold tracking-wider border transition text-[11px] ${
+                  filterByActiveMonthOnly ? 'bg-[#D4FF00] border-[#D4FF00] text-black font-black' : 'bg-[#0C0C0C] border-[#2A2A2A] text-[#888888] hover:text-white'
+                }`}
+              >
+                {filterByActiveMonthOnly ? `ONLY ${activeMonthMeta.monthName}` : 'ALL MONTHS'}
+              </button>
+
+              <a
+                href={GOOGLE_SHEET_VIEW_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-1.5 bg-[#0C0C0C] hover:bg-[#181818] text-[#D4FF00] border border-[#2A2A2A] hover:border-[#D4FF00] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition"
+              >
+                <Icons.FileSpreadsheet className="w-3 h-3" />
+                <span>EDIT IN SHEET</span>
+              </a>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto border border-[#262626] bg-[#0C0C0C]">
+            <table className="w-full text-left border-collapse font-mono-tag">
+              <thead>
+                <tr className="bg-[#181818] text-[#888888] text-[10px] font-bold uppercase tracking-widest border-b border-[#262626]">
+                  <th className="py-3 px-4 w-[16%]">PUBLISH DATE</th>
+                  <th className="py-3 px-4 w-[10%]">DAY</th>
+                  <th className="py-3 px-4 w-[22%]">BRAND</th>
+                  <th className="py-3 px-4 w-[14%]">CODE</th>
+                  <th className="py-3 px-4 w-[26%]">CONTENT IDEA</th>
+                  <th className="py-3 px-4 w-[12%] text-center">STATUS</th>
+                  <th className="py-3 px-4 w-[8%] text-right">ACTION</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#1A1A1A] text-xs">
+                {filteredEvents.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="py-12 text-center text-[#666666]">
+                      <p className="text-xs font-bold uppercase tracking-wider">NO CONTENT ITEMS MATCH CURRENT CRITERIA</p>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredEvents.map((event) => {
+                    const isDK = event.brandKey === 'dk';
+                    const isAB = event.brandKey === 'ab';
+                    const hasIdea = Boolean(event.contentIdea && event.contentIdea.trim().length > 0);
+
+                    return (
+                      <tr
+                        key={event.id}
+                        onClick={() => onSelectEvent(event)}
+                        className="hover:bg-[#181818] transition-colors cursor-pointer group"
+                      >
+                        <td className="py-3 px-4 font-bold text-white whitespace-nowrap">{event.formattedDate}</td>
+                        <td className="py-3 px-4 text-[#888888] whitespace-nowrap">
+                          <span className="px-1.5 py-0.5 bg-[#141414] text-[#888888] text-[10px] border border-[#222222]">
+                            {event.dayOfWeek}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            {isDK ? (
+                              <span className="p-1 bg-[#2a1a0c] text-[#FF8A00] border border-[#442a10]"><Icons.Utensils className="w-3 h-3" /></span>
+                            ) : isAB ? (
+                              <span className="p-1 bg-[#2a0c1a] text-[#FF2E93] border border-[#44102a]"><Icons.Sparkle className="w-3 h-3" /></span>
+                            ) : null}
+                            <span className={`font-bold uppercase tracking-wider ${isDK ? 'text-[#FF8A00]' : isAB ? 'text-[#FF2E93]' : 'text-white'}`}>
+                              {event.brand}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-4 whitespace-nowrap">
+                          <span className={`inline-block px-1.5 py-0.5 text-[10px] font-bold tracking-wider ${
+                            isDK ? 'bg-[#2a1a0c] text-[#FF8A00] border border-[#442a10]' : isAB ? 'bg-[#2a0c1a] text-[#FF2E93] border border-[#44102a]' : 'bg-[#181818] text-[#888888] border border-[#333333]'
+                          }`}>
+                            {event.refCode}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4">
+                          {hasIdea ? (
+                            <span className="font-sans font-medium text-white group-hover:text-[#D4FF00] transition">{event.contentIdea}</span>
+                          ) : (
+                            <span className="italic text-[#555555] font-normal">(Topic pending in sheet)</span>
+                          )}
+                        </td>
+                        <td className="py-3 px-4 text-center whitespace-nowrap">{getStatusBadge(event.status, hasIdea)}</td>
+                        <td className="py-3 px-4 text-right whitespace-nowrap">
+                          <button
+                            onClick={(e) => handleCopy(e, event)}
+                            className="p-1 bg-[#141414] hover:bg-[#222222] text-[#888888] hover:text-[#D4FF00] border border-[#2A2A2A] transition"
+                            title="Copy video details"
+                          >
+                            {copiedId === event.id ? <Icons.Check className="w-3 h-3 text-[#44FF44]" /> : <Icons.Copy className="w-3 h-3" />}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    /* Modal Component */
+    function EventDetailModal({ event, onClose }) {
+      const [copied, setCopied] = useState(false);
+      if (!event) return null;
+
+      const isDK = event.brandKey === 'dk';
+      const isAB = event.brandKey === 'ab';
+
+      const captionTemplate = useMemo(() => {
+        const title = event.contentIdea || 'New Video Post';
+        const brandHashtags = isDK
+          ? '#DeliciousKitchen #IndianFood #RecipeOfTheDay #HomeCooking #FoodReels #DesiFoodie'
+          : '#AashnaBoutique #FashionStyle #EthnicWear #TrendingFashion #OOTD #BoutiqueCollection';
+        return `✨ ${title}\n\nCatch our latest video showcasing ${event.brand}! Follow for daily inspiration and exclusive updates.\n\n📍 Brand: ${event.brand}\n📅 Scheduled: ${event.formattedDate}\n\n${brandHashtags}`;
+      }, [event, isDK]);
+
+      const handleCopyCaption = () => {
+        navigator.clipboard.writeText(captionTemplate);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      };
+
+      return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div
+            className={`w-full max-w-lg border p-6 relative overflow-hidden transition-all bg-[#141414] font-mono-tag ${
+              isDK ? 'border-[#FF8A00]/50 shadow-[0_0_50px_rgba(255,138,0,0.15)]' : isAB ? 'border-[#FF2E93]/50 shadow-[0_0_50px_rgba(255,46,147,0.15)]' : 'border-[#262626]'
+            }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button onClick={onClose} className="absolute top-5 right-5 p-1.5 bg-[#1C1C1C] hover:bg-[#2A2A2A] text-[#888888] hover:text-white border border-[#333333] transition">
+              <Icons.X className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-start gap-3.5 mb-5">
+              <div className={`p-3 border flex-shrink-0 ${
+                isDK ? 'bg-[#2a1a0c] text-[#FF8A00] border-[#442a10]' : isAB ? 'bg-[#2a0c1a] text-[#FF2E93] border-[#44102a]' : 'bg-[#181818] text-[#D4FF00] border-[#2A2A2A]'
+              }`}>
+                {isDK ? <Icons.Utensils className="w-5 h-5" /> : isAB ? <Icons.Sparkle className="w-5 h-5" /> : <Icons.Calendar className="w-5 h-5" />}
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-[11px] font-bold px-2 py-0.5 uppercase tracking-wider ${
+                    isDK ? 'bg-[#2a1a0c] text-[#FF8A00] border border-[#442a10]' : isAB ? 'bg-[#2a0c1a] text-[#FF2E93] border border-[#44102a]' : 'bg-[#181818] text-[#888888] border border-[#333333]'
+                  }`}>
+                    {event.refCode}
+                  </span>
+                  <span className="text-[11px] text-[#666666] uppercase">SEQ #{event.videoNumber}</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mt-1 uppercase tracking-wider">{event.brand}</h3>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 bg-[#0C0C0C] border border-[#262626] space-y-1.5">
+                <div className="text-[10px] font-bold uppercase tracking-widest text-[#888888]">VIDEO TOPIC / CONTENT DIRECTIVE</div>
+                <div className="font-editorial text-2xl font-normal text-white leading-snug">
+                  {event.contentIdea || <span className="italic text-[#666666] font-normal font-sans text-sm">No topic title entered yet. Update directly in connected Google Sheet.</span>}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 bg-[#0C0C0C] border border-[#262626] space-y-1">
+                  <div className="text-[9px] uppercase font-bold text-[#888888] flex items-center gap-1">
+                    <Icons.Calendar className="w-3 h-3 text-[#D4FF00]" /> PUBLISH DATE
+                  </div>
+                  <div className="text-xs font-bold text-white">{event.formattedDate}</div>
+                </div>
+                <div className="p-3 bg-[#0C0C0C] border border-[#262626] space-y-1">
+                  <div className="text-[9px] uppercase font-bold text-[#888888] flex items-center gap-1">
+                    <Icons.Clock className="w-3 h-3 text-[#D4FF00]" /> PIPELINE STATUS
+                  </div>
+                  <div className="text-xs font-bold text-white uppercase">{event.status}</div>
+                </div>
+              </div>
+
+              <div className="p-3 bg-[#0C0C0C] border border-[#262626] space-y-2">
+                <div className="flex items-center justify-between text-[10px] font-bold text-[#888888] uppercase tracking-wider">
+                  <span className="flex items-center gap-1">
+                    <Icons.Hash className="w-3 h-3 text-[#D4FF00]" /> CAPTION & HASHTAG PAYLOAD
+                  </span>
+                  <span className="text-[9px] text-[#666666]">INSTAGRAM / REELS</span>
+                </div>
+                <p className="text-[11px] font-mono-tag text-[#AAAAAA] bg-[#141414] p-2.5 border border-[#222222] whitespace-pre-line select-all leading-relaxed">
+                  {captionTemplate}
+                </p>
+              </div>
+
+              <div className="pt-2 flex items-center gap-3">
+                <button
+                  onClick={handleCopyCaption}
+                  className="flex-1 py-2.5 px-4 bg-[#D4FF00] hover:bg-[#bce400] text-black font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition active:scale-[0.99]"
+                >
+                  {copied ? (
+                    <>
+                      <Icons.Check className="w-3.5 h-3.5" />
+                      <span>COPIED TO CLIPBOARD</span>
+                    </>
+                  ) : (
+                    <>
+                      <Icons.Copy className="w-3.5 h-3.5" />
+                      <span>COPY CAPTION & TAGS</span>
+                    </>
+                  )}
+                </button>
+
+                <a
+                  href={GOOGLE_SHEET_VIEW_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-2.5 px-4 bg-[#0C0C0C] hover:bg-[#1C1C1C] text-[#D4FF00] border border-[#262626] hover:border-[#D4FF00] font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition"
+                >
+                  <Icons.FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>EDIT IN SHEET</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    /* Main App Component */
+    function App() {
+      const [events, setEvents] = useState([]);
+      const [months, setMonths] = useState([]);
+      const [currentMonthIndex, setCurrentMonthIndex] = useState(0);
+      const [brandFilter, setBrandFilter] = useState('all');
+      const [viewMode, setViewMode] = useState('month');
+      const [searchQuery, setSearchQuery] = useState('');
+      const [statusFilter, setStatusFilter] = useState('all');
+      const [isLoading, setIsLoading] = useState(true);
+      const [lastFetchedAt, setLastFetchedAt] = useState(null);
+      const [isFallback, setIsFallback] = useState(false);
+      const [autoSyncInterval, setAutoSyncInterval] = useState(60);
+      const [selectedEvent, setSelectedEvent] = useState(null);
+      const [showSyncMenu, setShowSyncMenu] = useState(false);
+
+      const loadData = useCallback(async () => {
+        setIsLoading(true);
+        try {
+          const res = await fetchLiveSheetData();
+          setEvents(res.events);
+          setMonths(res.months);
+          setLastFetchedAt(res.fetchedAt);
+          setIsFallback(res.isFallback);
+        } catch (e) {
+          console.error(e);
+        } finally {
+          setIsLoading(false);
+        }
+      }, []);
+
+      useEffect(() => {
+        loadData();
+      }, [loadData]);
+
+      // Auto-sync polling timer
+      useEffect(() => {
+        if (autoSyncInterval === 0) return;
+        const intervalId = setInterval(() => {
+          loadData();
+        }, autoSyncInterval * 1000);
+        return () => clearInterval(intervalId);
+      }, [autoSyncInterval, loadData]);
+
+      const activeMonthMeta = months[currentMonthIndex] || {
+        key: 'default',
+        year: 2026,
+        month: 7,
+        label: 'August 2026',
+        monthName: 'August',
+        totalEvents: 0,
+        dkCount: 0,
+        abCount: 0,
+        postedCount: 0,
+        editedCount: 0,
+        plannedCount: 0,
+        emptyCount: 0,
+      };
+
+      const filteredEvents = useMemo(() => {
+        let list = [...events];
+        if (brandFilter !== 'all') {
+          list = list.filter((e) => e.brandKey === brandFilter);
+        }
+        if (statusFilter !== 'all') {
+          list = list.filter((e) => (e.status || '').toLowerCase().includes(statusFilter.toLowerCase()));
+        }
+        if (searchQuery.trim().length > 0) {
+          const q = searchQuery.toLowerCase();
+          list = list.filter(
+            (e) =>
+              e.contentIdea.toLowerCase().includes(q) ||
+              e.brand.toLowerCase().includes(q) ||
+              e.refCode.toLowerCase().includes(q)
+          );
+        }
+        return list;
+      }, [events, brandFilter, statusFilter, searchQuery]);
+
+      const formatLastSync = (date) => {
+        if (!date) return 'NEVER';
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      };
+
+      const dkEvents = events.filter((e) => e.brandKey === 'dk').length;
+      const abEvents = events.filter((e) => e.brandKey === 'ab').length;
+      const postedCount = events.filter((e) => (e.status || '').toLowerCase().includes('posted')).length;
+      const editedCount = events.filter((e) => (e.status || '').toLowerCase().includes('edited')).length;
+      const needIdeaCount = events.filter((e) => (e.status || '').toLowerCase().includes('idea') || !e.contentIdea).length;
+      const withIdeaCount = events.filter((e) => e.contentIdea && e.contentIdea.trim().length > 0).length;
+      const filledPercent = events.length ? Math.round((withIdeaCount / events.length) * 100) : 0;
+      const postedPercent = events.length ? Math.round((postedCount / events.length) * 100) : 0;
+      const editedPercent = events.length ? Math.round((editedCount / events.length) * 100) : 0;
+
+      return (
+        <div className="min-h-screen bg-[#0C0C0C] text-white font-sans selection:bg-[#D4FF00] selection:text-black flex flex-col relative overflow-x-hidden">
+          
+          {/* Header */}
+          <header className="w-full bg-[#0C0C0C] border-b border-[#222222] sticky top-0 z-30 transition-all">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5">
+                  <div className="w-10 h-10 bg-[#181818] border border-[#333333] flex items-center justify-center relative flex-shrink-0">
+                    <span className="font-editorial text-2xl italic font-bold text-[#D4FF00]">C</span>
+                    <div className="absolute -bottom-1 -right-1 w-2.5 h-2.5 bg-[#D4FF00] pulse-dot"></div>
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2.5">
+                      <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white uppercase flex items-center gap-2">
+                        <span>Content Calendar</span>
+                        <span className="font-editorial italic lowercase text-xs text-[#888888] tracking-normal font-normal">studio</span>
+                      </h1>
+                      <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono-tag font-bold uppercase tracking-wider bg-[#181818] text-[#D4FF00] border border-[#333333]">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#D4FF00] animate-ping"></span>
+                        <span>LIVE SYNC</span>
+                      </div>
+                    </div>
+                    <div className="text-[11px] text-[#888888] font-mono-tag mt-0.5 flex items-center gap-2 flex-wrap uppercase tracking-wider">
+                      <span>DUAL BRAND CADENCE:</span>
+                      <span className="text-[#FF8A00] font-bold flex items-center gap-1">
+                        <Icons.Utensils className="w-3 h-3" /> DELICIOUS KITCHEN
+                      </span>
+                      <span className="text-[#444444]">•</span>
+                      <span className="text-[#FF2E93] font-bold flex items-center gap-1">
+                        <Icons.Sparkle className="w-3 h-3" /> AASHNA BOUTIQUE
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Sync Actions */}
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap justify-between sm:justify-end font-mono-tag">
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowSyncMenu(!showSyncMenu)}
+                      className="px-3 py-1.5 bg-[#181818] hover:bg-[#222222] text-[#888888] hover:text-[#FFFFFF] border border-[#2A2A2A] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition"
+                    >
+                      <Icons.Clock className="w-3 h-3 text-[#D4FF00]" />
+                      <span>{autoSyncInterval === 0 ? 'SYNC: OFF' : `SYNC: ${autoSyncInterval}S`}</span>
+                    </button>
+
+                    {showSyncMenu && (
+                      <div className="absolute right-0 mt-2 w-48 bg-[#181818] border border-[#333333] shadow-2xl p-1.5 z-50 font-mono-tag">
+                        <div className="text-[9px] font-bold text-[#888888] px-2 py-1 uppercase tracking-widest border-b border-[#262626] mb-1">Auto-Refresh Rate</div>
+                        {[
+                          { label: 'Real-time (15s)', value: 15 },
+                          { label: 'Every 60s (1m)', value: 60 },
+                          { label: 'Manual Only', value: 0 },
+                        ].map((option) => (
+                          <button
+                            key={option.value}
+                            onClick={() => {
+                              setAutoSyncInterval(option.value);
+                              setShowSyncMenu(false);
+                            }}
+                            className={`w-full text-left px-2.5 py-1.5 text-[11px] font-bold uppercase tracking-wider flex items-center justify-between transition ${
+                              autoSyncInterval === option.value ? 'bg-[#262626] text-[#D4FF00]' : 'text-[#888888] hover:bg-[#222222] hover:text-white'
+                            }`}
+                          >
+                            <span>{option.label}</span>
+                            {autoSyncInterval === option.value && <span className="w-1.5 h-1.5 rounded-full bg-[#D4FF00]"></span>}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={loadData}
+                    disabled={isLoading}
+                    className={`px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider flex items-center gap-2 transition cursor-pointer active:scale-95 ${
+                      isLoading ? 'bg-[#181818] text-[#888888] border border-[#333333] cursor-not-allowed' : 'bg-[#D4FF00] hover:bg-[#c2ea00] text-[#0C0C0C] border border-[#D4FF00] font-black glow-accent'
+                    }`}
+                  >
+                    <Icons.RefreshCw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin text-[#D4FF00]' : 'text-black'}`} />
+                    <span>{isLoading ? 'SYNCING...' : 'SYNC SHEET'}</span>
+                  </button>
+
+                  <a
+                    href={GOOGLE_SHEET_VIEW_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 bg-[#181818] hover:bg-[#222222] text-[#888888] hover:text-[#D4FF00] border border-[#2A2A2A] text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition"
+                  >
+                    <Icons.FileSpreadsheet className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">G-SHEET</span>
+                  </a>
+                </div>
+              </div>
+
+              <div className="mt-2.5 pt-2 border-t border-[#1C1C1C] flex items-center justify-between text-[10px] font-mono-tag text-[#888888] flex-wrap gap-2 uppercase tracking-wider">
+                <div className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#44FF44] pulse-green"></span>
+                  <span>SOURCE: <span className="text-[#FFFFFF]">G-SHEET / PUB?GID=0</span></span>
+                  {isFallback && <span className="text-[#D4FF00] bg-[#181818] px-1.5 py-0.5 border border-[#333333]">CACHED DATA</span>}
+                </div>
+                <div className="flex items-center gap-3">
+                  <span>POST COUNT: <strong className="text-[#D4FF00] font-black">{events.length}</strong></span>
+                  <span className="text-[#333333]">/</span>
+                  <span>LAST SYNC: <strong className="text-[#FFFFFF]">{formatLastSync(lastFetchedAt)}</strong></span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Main Body */}
+          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+            
+            {/* Stats Cards */}
+            <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 font-mono-tag">
+              <div className="bg-[#181818] border border-[#332211] p-4 relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#FF8A00] flex items-center gap-1.5">
+                    <Icons.Utensils className="w-3.5 h-3.5" /> DELICIOUS KITCHEN
+                  </span>
+                  <span className="px-1.5 py-0.5 text-[9px] font-bold bg-[#2a1a0c] text-[#FF8A00] border border-[#442a10]">2/WK</span>
+                </div>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="font-editorial text-4xl italic font-normal text-white">{dkEvents}</span>
+                  <span className="text-[10px] text-[#888888] uppercase">TOTAL VIDEOS</span>
+                </div>
+                <div className="mt-2 text-[10px] text-[#888888] uppercase tracking-wide">
+                  {activeMonthMeta.monthName}: <strong className="text-[#FF8A00]">{activeMonthMeta.dkCount} POSTS</strong>
+                </div>
+              </div>
+
+              <div className="bg-[#181818] border border-[#331122] p-4 relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#FF2E93] flex items-center gap-1.5">
+                    <Icons.Sparkle className="w-3.5 h-3.5" /> AASHNA BOUTIQUE
+                  </span>
+                  <span className="px-1.5 py-0.5 text-[9px] font-bold bg-[#2a0c1a] text-[#FF2E93] border border-[#44102a]">2/WK</span>
+                </div>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="font-editorial text-4xl italic font-normal text-white">{abEvents}</span>
+                  <span className="text-[10px] text-[#888888] uppercase">TOTAL VIDEOS</span>
+                </div>
+                <div className="mt-2 text-[10px] text-[#888888] uppercase tracking-wide">
+                  {activeMonthMeta.monthName}: <strong className="text-[#FF2E93]">{activeMonthMeta.abCount} POSTS</strong>
+                </div>
+              </div>
+
+              <div className="bg-[#181818] border border-[#262626] p-4 relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#D4FF00] flex items-center gap-1.5">
+                    <Icons.ShieldCheck className="w-3.5 h-3.5" /> CADENCE COLLISION
+                  </span>
+                  <span className="px-1.5 py-0.5 text-[9px] font-bold bg-[#102414] text-[#44FF44] border border-[#225522]">STRICT</span>
+                </div>
+                <div className="mt-3 flex items-baseline gap-2">
+                  <span className="font-editorial text-4xl italic font-normal text-[#44FF44]">0</span>
+                  <span className="text-[10px] text-[#888888] uppercase">CONFLICTS</span>
+                </div>
+                <div className="mt-2 text-[10px] text-[#888888] uppercase tracking-wide">100% NON-OVERLAPPING DUAL-BRAND</div>
+              </div>
+
+              <div className="bg-[#181818] border border-[#262626] p-4 relative overflow-hidden">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-white flex items-center gap-1.5">
+                    <Icons.TrendingUp className="w-3.5 h-3.5 text-[#D4FF00]" /> PIPELINE
+                  </span>
+                  <span className="text-xs font-bold text-[#D4FF00]">{filledPercent}%</span>
+                </div>
+                <div className="mt-3.5 h-2 w-full bg-[#0C0C0C] overflow-hidden flex gap-0.5 p-0.5 border border-[#2A2A2A]">
+                  <div style={{ width: `${postedPercent}%` }} className="h-full bg-[#44FF44] transition-all" />
+                  <div style={{ width: `${editedPercent}%` }} className="h-full bg-[#00E5FF] transition-all" />
+                  <div style={{ width: `${filledPercent - postedPercent - editedPercent}%` }} className="h-full bg-[#D4FF00] transition-all" />
+                </div>
+                <div className="mt-2.5 flex items-center justify-between text-[9px] text-[#888888] uppercase">
+                  <span className="text-[#44FF44]">POSTED: {postedCount}</span>
+                  <span className="text-[#00E5FF]">EDITED: {editedCount}</span>
+                  <span className="text-[#D4FF00]">NEED: {needIdeaCount}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Controls Bar */}
+            <div className="w-full space-y-3 font-mono-tag">
+              <div className="bg-[#181818] border border-[#262626] p-3 sm:p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex items-center bg-[#0C0C0C] border border-[#2A2A2A]">
+                    <button
+                      onClick={() => setCurrentMonthIndex(Math.max(0, currentMonthIndex - 1))}
+                      disabled={currentMonthIndex === 0}
+                      className={`p-2.5 text-[#888888] transition ${currentMonthIndex === 0 ? 'opacity-30 cursor-not-allowed text-[#444444]' : 'hover:bg-[#222222] hover:text-white'}`}
+                    >
+                      <Icons.ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <div className="px-3.5 py-1.5 flex items-center gap-2 border-x border-[#2A2A2A]">
+                      <span className="text-xs font-bold text-[#D4FF00] tracking-widest uppercase">{activeMonthMeta.label}</span>
+                    </div>
+                    <button
+                      onClick={() => setCurrentMonthIndex(Math.min(months.length - 1, currentMonthIndex + 1))}
+                      disabled={currentMonthIndex >= months.length - 1}
+                      className={`p-2.5 text-[#888888] transition ${currentMonthIndex >= months.length - 1 ? 'opacity-30 cursor-not-allowed text-[#444444]' : 'hover:bg-[#222222] hover:text-white'}`}
+                    >
+                      <Icons.ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+                    {months.map((m, idx) => {
+                      const isActive = idx === currentMonthIndex;
+                      return (
+                        <button
+                          key={m.key}
+                          onClick={() => setCurrentMonthIndex(idx)}
+                          className={`px-3 py-1.5 text-xs uppercase tracking-wider font-bold whitespace-nowrap transition-all flex items-center gap-2 border ${
+                            isActive ? 'bg-[#D4FF00] text-[#0C0C0C] border-[#D4FF00] font-black' : 'bg-[#0C0C0C] hover:bg-[#222222] text-[#888888] hover:text-white border-[#2A2A2A]'
+                          }`}
+                        >
+                          <span>{m.monthName}</span>
+                          <span className={`text-[10px] px-1 py-0.2 font-bold ${isActive ? 'bg-black/20 text-black' : 'bg-[#181818] text-[#888888]'}`}>{m.totalEvents}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+                  <div className="text-[10px] text-[#888888] font-bold uppercase tracking-widest flex items-center gap-1 mr-1 hidden sm:flex">
+                    <Icons.Filter className="w-3 h-3 text-[#D4FF00]" />
+                    <span>FILTER:</span>
+                  </div>
+
+                  <button
+                    onClick={() => setBrandFilter('all')}
+                    className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center border ${
+                      brandFilter === 'all' ? 'bg-white text-black border-white font-black' : 'bg-[#0C0C0C] text-[#888888] hover:text-white hover:bg-[#222222] border-[#2A2A2A]'
+                    }`}
+                  >
+                    <Icons.Layers className="w-3.5 h-3.5" />
+                    <span>ALL BRANDS</span>
+                    <span className="text-[10px] px-1.5 py-0.2 bg-[#222222] text-[#888888]">{events.length}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setBrandFilter('dk')}
+                    className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center border ${
+                      brandFilter === 'dk' ? 'bg-[#FF8A00] text-black border-[#FF8A00] font-black glow-dk' : 'bg-[#0C0C0C] text-[#FF8A00]/70 hover:text-[#FF8A00] hover:bg-[#222222] border-[#332211]'
+                    }`}
+                  >
+                    <Icons.Utensils className="w-3.5 h-3.5" />
+                    <span>DELICIOUS KITCHEN</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 ${brandFilter === 'dk' ? 'bg-black/30 text-black font-bold' : 'bg-[#181818] text-[#FF8A00]'}`}>{dkEvents}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setBrandFilter('ab')}
+                    className={`px-3.5 py-2 text-xs font-bold uppercase tracking-wider transition-all flex items-center gap-2 flex-1 sm:flex-none justify-center border ${
+                      brandFilter === 'ab' ? 'bg-[#FF2E93] text-white border-[#FF2E93] font-black glow-ab' : 'bg-[#0C0C0C] text-[#FF2E93]/70 hover:text-[#FF2E93] hover:bg-[#222222] border-[#331122]'
+                    }`}
+                  >
+                    <Icons.Sparkle className="w-3.5 h-3.5" />
+                    <span>AASHNA BOUTIQUE</span>
+                    <span className={`text-[10px] px-1.5 py-0.2 ${brandFilter === 'ab' ? 'bg-black/30 text-white font-bold' : 'bg-[#181818] text-[#FF2E93]'}`}>{abEvents}</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* View Switcher & Search */}
+              <div className="bg-[#141414] border border-[#222222] p-2.5 sm:px-4 flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+                <div className="flex items-center bg-[#0C0C0C] border border-[#2A2A2A] w-full sm:w-auto justify-between sm:justify-start">
+                  <button
+                    onClick={() => setViewMode('month')}
+                    className={`px-3 py-1.5 uppercase tracking-wider font-bold flex items-center gap-1.5 transition text-[11px] ${
+                      viewMode === 'month' ? 'bg-[#D4FF00] text-[#0C0C0C] font-black' : 'text-[#888888] hover:text-white hover:bg-[#181818]'
+                    }`}
+                  >
+                    <Icons.Calendar className="w-3.5 h-3.5" />
+                    <span>MONTH GRID</span>
+                  </button>
+
+                  <button
+                    onClick={() => setViewMode('two-month')}
+                    className={`px-3 py-1.5 uppercase tracking-wider font-bold flex items-center gap-1.5 transition text-[11px] ${
+                      viewMode === 'two-month' ? 'bg-[#D4FF00] text-[#0C0C0C] font-black' : 'text-[#888888] hover:text-white hover:bg-[#181818]'
+                    }`}
+                  >
+                    <Icons.Columns2 className="w-3.5 h-3.5" />
+                    <span>BI-MONTH VIEW</span>
+                  </button>
+
+                  <button
+                    onClick={() => setViewMode('queue')}
+                    className={`px-3 py-1.5 uppercase tracking-wider font-bold flex items-center gap-1.5 transition text-[11px] ${
+                      viewMode === 'queue' ? 'bg-[#D4FF00] text-[#0C0C0C] font-black' : 'text-[#888888] hover:text-white hover:bg-[#181818]'
+                    }`}
+                  >
+                    <Icons.List className="w-3.5 h-3.5" />
+                    <span>QUEUE TABLE</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2.5 w-full md:w-auto flex-wrap sm:flex-nowrap">
+                  <div className="relative flex-1 sm:w-56">
+                    <Icons.Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#666666]" />
+                    <input
+                      type="text"
+                      placeholder="SEARCH TOPIC / CONTENT..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-[#0C0C0C] border border-[#2A2A2A] text-white pl-8 pr-3 py-1.5 text-[11px] uppercase placeholder:text-[#555555] focus:outline-none focus:border-[#D4FF00]"
+                    />
+                  </div>
+
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="bg-[#0C0C0C] border border-[#2A2A2A] text-[#D4FF00] py-1.5 px-3 text-[11px] uppercase font-bold tracking-wider focus:outline-none focus:border-[#D4FF00] cursor-pointer"
+                  >
+                    <option value="all">STATUS: ALL</option>
+                    <option value="Posted">POSTED</option>
+                    <option value="Edited">EDITED / READY</option>
+                    <option value="Planned">PLANNED</option>
+                    <option value="Idea Needed">IDEA NEEDED</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Views */}
+            {isLoading && events.length === 0 ? (
+              <div className="w-full bg-[#141414] border border-[#222222] p-16 flex flex-col items-center justify-center text-center space-y-4 font-mono-tag">
+                <Icons.RefreshCw className="w-6 h-6 text-[#D4FF00] animate-spin" />
+                <div>
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">CONNECTING TO GOOGLE SPREADSHEET...</h3>
+                  <p className="text-xs text-[#888888] mt-1">Parsing real-time publishing dates and brand schedules.</p>
+                </div>
+              </div>
+            ) : viewMode === 'month' ? (
+              <MonthCalendarGrid
+                monthMeta={activeMonthMeta}
+                events={filteredEvents}
+                brandFilter={brandFilter}
+                onSelectEvent={(ev) => setSelectedEvent(ev)}
+              />
+            ) : viewMode === 'two-month' ? (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between bg-[#141414] p-3 px-4 border border-[#222222] text-[#888888] text-[11px] font-mono-tag uppercase tracking-wider">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-[#D4FF00] pulse-dot"></span>
+                    <span className="font-bold text-white">BI-MONTH DUAL GRID:</span>
+                    <span className="text-[#D4FF00] font-bold">{activeMonthMeta.label}</span>
+                  </div>
+                  <div className="text-[#666666] hidden md:block">CONSECUTIVE MULTI-MONTH PRODUCTION TIMELINE</div>
+                </div>
+
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 items-start">
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between px-1 font-mono-tag">
+                      <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                        <span className="w-2 h-2 bg-[#D4FF00]"></span>
+                        {activeMonthMeta.label}
+                      </h3>
+                      <span className="text-[10px] text-[#888888] bg-[#181818] border border-[#2A2A2A] px-2 py-0.5 font-bold uppercase">{activeMonthMeta.totalEvents} POSTS</span>
+                    </div>
+                    <MonthCalendarGrid
+                      monthMeta={activeMonthMeta}
+                      events={filteredEvents}
+                      brandFilter={brandFilter}
+                      onSelectEvent={(ev) => setSelectedEvent(ev)}
+                    />
+                  </div>
+
+                  {months[currentMonthIndex + 1] && (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between px-1 font-mono-tag">
+                        <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                          <span className="w-2 h-2 bg-[#FF2E93]"></span>
+                          {months[currentMonthIndex + 1].label}
+                        </h3>
+                        <span className="text-[10px] text-[#888888] bg-[#181818] border border-[#2A2A2A] px-2 py-0.5 font-bold uppercase">{months[currentMonthIndex + 1].totalEvents} POSTS</span>
+                      </div>
+                      <MonthCalendarGrid
+                        monthMeta={months[currentMonthIndex + 1]}
+                        events={filteredEvents}
+                        brandFilter={brandFilter}
+                        onSelectEvent={(ev) => setSelectedEvent(ev)}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <QueueTable
+                events={filteredEvents}
+                activeMonthMeta={activeMonthMeta}
+                brandFilter={brandFilter}
+                onSelectEvent={(ev) => setSelectedEvent(ev)}
+              />
+            )}
+          </main>
+
+          {/* Footer */}
+          <footer className="w-full border-t border-[#1C1C1C] bg-[#0C0C0C] py-5 px-4 text-center text-xs text-[#888888] font-mono-tag">
+            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 bg-[#44FF44] pulse-dot"></span>
+                <span className="text-[11px] uppercase tracking-wider">LIVE GOOGLE SPREADSHEET SYNC ENGINE ACTIVE</span>
+              </div>
+              <p className="text-[10px] text-[#666666] uppercase tracking-wider">
+                PUBLISHING CADENCE: 2 VIDEOS/WEEK PER BRAND • DELICIOUS KITCHEN & AASHNA BOUTIQUE
+              </p>
+            </div>
+          </footer>
+
+          {/* Modal */}
+          {selectedEvent && (
+            <EventDetailModal
+              event={selectedEvent}
+              onClose={() => setSelectedEvent(null)}
+            />
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
