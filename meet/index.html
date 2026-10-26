@@ -147,7 +147,7 @@ const CONFIG={
  contact:{whatsappGroupUrl:"",email:"",instagram:"",linkedin:""},
  domainUrl:"https://example.com/",
  bring:["Your pitch or story, ready for 1 to 2 minutes","A phone to connect with new people","Questions for founders who’ve been there"],
- sheets:{meets:"",speakers:"",collaboration:"",nextMeet:""}, // 'Publish to web' CSV links of PUBLIC sheets only
+ sheets:{responses:"https://docs.google.com/spreadsheets/d/e/2PACX-1vTZdhVjDSFmrqdH1znd3M0BWdxTRz3lAX2v1zaiWRW6WcQTv1ifTcwllwlFilr7STAIxmr52P2-basV/pub?gid=1728750462&single=true&output=csv"}, // single form responses CSV
  form:{
   actionUrl:"https://docs.google.com/forms/d/e/1FAIpQLSdNp8mPkrUNfqdcapHzwPra0fbGegDhI4wjzzdWjQ_kQsF61Q/formResponse",
   fallbackUrl:"https://docs.google.com/forms/d/e/1FAIpQLSdNp8mPkrUNfqdcapHzwPra0fbGegDhI4wjzzdWjQ_kQsF61Q/viewform?usp=pp_url",
@@ -264,8 +264,19 @@ async function submit(e){e.preventDefault();const f=$("#rf");if(f.hp.value||!che
 function applyLang(){document.documentElement.lang=lang;document.querySelectorAll("[data-i18n]").forEach(e=>e.textContent=t(e.dataset.i18n));$("#h1").textContent=lang=="te"?CONFIG.taglineTe:CONFIG.tagline;$("#lg").textContent=lang=="te"?"EN":"తెలుగు";filters();renderStats();renderNext();renderMeets();renderSpk();renderCol();counters()}
 function counters(){const io=new IntersectionObserver(es=>es.forEach(x=>{if(!x.isIntersecting)return;io.unobserve(x.target);const el=x.target,to=+el.dataset.to;if(matchMedia("(prefers-reduced-motion:reduce)").matches||!to)return;const t0=performance.now(),st=n=>{const p=Math.min(1,(n-t0)/1200);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(st)};requestAnimationFrame(st)}));document.querySelectorAll(".sg b").forEach(b=>io.observe(b))}
 async function init(){["#meets","#spk","#cl"].forEach(s=>$(s).innerHTML='<div class="sk"></div>'.repeat(3));
- const C=CONFIG.sheets,ap=r=>String(r.approved).toUpperCase()=="TRUE",[a,b,c,d]=await Promise.all([load(C.meets),load(C.speakers),load(C.collaboration),load(C.nextMeet)]);
- S.meets=C.meets?a:DEMO.meets;S.spk=C.speakers?b&&b.filter(ap):DEMO.spk;S.col=C.collaboration?c&&c.filter(ap):DEMO.col;S.next=C.nextMeet?(d&&d[0])||{}:DEMO.next;applyLang()}
+ const C=CONFIG.sheets,ap=r=>String(r["Approved"]).toUpperCase()=="TRUE";
+ function mapSpk(r){const ty=r["Who are you?"]||"";let type="";if(/startup/i.test(ty))type="startup";else if(/business/i.test(ty))type="business";else if(/mentor|investor/i.test(ty))type="mentor";else if(/collab/i.test(ty))type="collab";else type="attend";return{name:r["Full Name"],type,org:r["Startup Name"]||r["Business Name"]||"",one_liner:r["One line description"]||r["Story or Topic you'll talk about"]||"",sector:r["Industry"]||"",stage:r["Stage"]||"",link:r["Website or Instagram"]||"",photo:"",approved:r["Approved"]};}
+ function mapCol(r){const ty=r["Who are you?"]||"",lf=r["What are you looking for?"]||"",co=r["What can you offer?"]||"";const rows=[];if(lf)rows.push({name:r["Full Name"],kind:"looking_for",text:lf,contact_link:"",approved:r["Approved"]});if(co)rows.push({name:r["Full Name"],kind:"can_offer",text:co,contact_link:"",approved:r["Approved"]});return rows;}
+ if(C.responses){
+  const raw=await load(C.responses);
+  if(raw){
+   const approved=raw.filter(ap);
+   S.spk=approved.filter(r=>{const ty=r["Who are you?"]||"";return/startup|business|mentor|investor/i.test(ty);}).map(mapSpk);
+   S.col=approved.filter(r=>/collab/i.test(r["Who are you?"]||"")).flatMap(mapCol);
+   S.meets=DEMO.meets;S.next=DEMO.next;
+  }else{S.spk=DEMO.spk;S.col=DEMO.col;S.meets=DEMO.meets;S.next=DEMO.next;}
+ }else{S.meets=DEMO.meets;S.spk=DEMO.spk;S.col=DEMO.col;S.next=DEMO.next;}
+ applyLang()}
 document.title=CONFIG.name+" | Sunday startup meet";$("#logo").textContent=CONFIG.name;$("#fn").textContent=CONFIG.name;$("#yr").textContent=new Date().getFullYear();$("#city").textContent=has(CONFIG.city)?CONFIG.city:"";$("#story").textContent=CONFIG.story;
 $("#fq").innerHTML=FAQ.map(q=>`<details><summary>${esc(q[0])}</summary><p>${esc(q[1])}</p></details>`).join("");
 const K=CONFIG.contact;$("#fc").innerHTML=[[K.whatsappGroupUrl,"WhatsApp"],[K.instagram,"Instagram"],[K.linkedin,"LinkedIn"],[K.email&&"mailto:"+K.email,"Email"]].filter(a=>a[0]&&(url(a[0])||a[0].startsWith("mailto:"))).map(a=>`<p><a href="${esc(a[0])}" target="_blank" rel="noopener">${a[1]}</a></p>`).join("");
