@@ -10,17 +10,24 @@
 *{box-sizing:border-box}
 body{margin:0 auto;max-width:480px;padding:16px 16px 40px;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
 h1{font-size:20px;margin:4px 0 14px}
-#tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
-#tabs button{padding:10px 0;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--mut);font:600 14px inherit;font-family:inherit}
+#tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:14px}
+#tabs button{padding:10px 0;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--mut);font-weight:600;font-size:13px;font-family:inherit}
 #tabs button.on{background:var(--leaf);border-color:var(--leaf);color:#fff}
 #f{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 14px 14px}
 label{display:block;margin-top:12px;font-size:14px;color:var(--mut)}
-input,select,textarea{width:100%;margin-top:4px;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:16px inherit;font-family:inherit}
+input,select,textarea{width:100%;margin-top:4px;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font-size:16px;font-family:inherit}
 input[readonly]{opacity:.7}
-#s{width:100%;margin-top:16px;padding:16px;border:0;border-radius:10px;background:var(--gold);color:#1a1300;font:700 18px inherit;font-family:inherit}
+#s{width:100%;margin-top:16px;padding:16px;border:0;border-radius:10px;background:var(--gold);color:#1a1300;font-weight:700;font-size:18px;font-family:inherit}
 #s:disabled{opacity:.5}
 #m{min-height:24px;margin-top:12px;text-align:center;font-weight:600;color:var(--leaf)}
 #m.err{color:#d64545}
+.hd small,.g small,.row small{color:var(--mut);display:block;font-size:13px}
+.hd{padding:14px 0 2px}
+.big{font-size:36px;font-weight:800}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.g div{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.neg{color:#d64545}.pos{color:var(--leaf)}
 </style>
 </head>
 <body>
@@ -45,7 +52,7 @@ try { key = localStorage.getItem('k') || ''; } catch (e) {}
 function say(t, err) { $('#m').textContent = t; $('#m').className = err ? 'err' : ''; }
 const field = l => $('#f').querySelector('[data-f="' + l + '"]');
 
-Object.keys(FORMS).forEach(n => {
+[...Object.keys(FORMS), 'Dashboard'].forEach(n => {
   const b = document.createElement('button');
   b.textContent = n; b.onclick = () => { cur = n; say(''); draw(); };
   $('#tabs').append(b);
@@ -54,6 +61,8 @@ Object.keys(FORMS).forEach(n => {
 function draw() {
   [...$('#tabs').children].forEach(b => b.className = b.textContent === cur ? 'on' : '');
   const f = $('#f'); f.innerHTML = '';
+  $('#s').hidden = cur === 'Dashboard';
+  if (cur === 'Dashboard') return showDash();
   FORMS[cur].forEach(([l, t]) => {
     const w = document.createElement('label'); w.textContent = l;
     let i;
@@ -75,6 +84,23 @@ function draw() {
     ['Cash Sales', 'UPI / Online Sales'].forEach(l => field(l).oninput = () =>
       tot.value = (+field('Cash Sales').value || 0) + (+field('UPI / Online Sales').value || 0));
   }
+}
+
+const inr = n => (n < 0 ? '-' : '') + '₹' + Math.abs(Math.round(n)).toLocaleString('en-IN');
+const esc = s => String(s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+async function showDash() {
+  const f = $('#f'); f.textContent = 'Loading';
+  try {
+    const r = await (await fetch(URL_ + '?action=dashboard&key=' + encodeURIComponent(key))).json();
+    if (!r.ok) throw r.error;
+    const rows = r.rows.filter(x => x.sales || x.groceries || x.wages || x.expenses);
+    if (!rows.length) { f.textContent = 'No data yet. Add entries and the dashboard fills in.'; return; }
+    const m = rows[rows.length - 1], cls = n => n < 0 ? 'neg' : 'pos';
+    f.innerHTML = '<div class="hd"><small>' + esc(m.month) + ' net profit</small><div class="big ' + cls(m.profit) + '">' + inr(m.profit) + '</div></div>'
+      + '<div class="g">' + [['Sales', m.sales], ['Groceries', m.groceries], ['Wages', m.wages], ['Expenses', m.expenses]]
+        .map(([l, v]) => '<div><small>' + l + '</small><b>' + inr(v) + '</b></div>').join('') + '</div>'
+      + rows.slice().reverse().map(x => '<div class="row"><span>' + esc(x.month) + '<small>Sales ' + inr(x.sales) + '</small></span><b class="' + cls(x.profit) + '">' + inr(x.profit) + '</b></div>').join('');
+  } catch (e) { f.textContent = 'Could not load: ' + e; }
 }
 
 async function save() {
