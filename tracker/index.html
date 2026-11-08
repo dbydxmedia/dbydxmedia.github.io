@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kitchen tracker</title>
+<style>
+:root{--bg:#f2f5f2;--card:#fff;--ink:#12201b;--mut:#5f6f68;--leaf:#1b6b4a;--gold:#e8a317;--line:#d5ddd7}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1512;--card:#17211c;--ink:#e8efea;--mut:#93a39b;--leaf:#4cc38a;--gold:#f0b429;--line:#2a3830}}
+*{box-sizing:border-box}
+body{margin:0 auto;max-width:480px;padding:16px 16px 40px;background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
+h1{font-size:20px;margin:4px 0 14px}
+#tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px}
+#tabs button{padding:10px 0;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--mut);font:600 14px inherit;font-family:inherit}
+#tabs button.on{background:var(--leaf);border-color:var(--leaf);color:#fff}
+#f{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 14px 14px}
+label{display:block;margin-top:12px;font-size:14px;color:var(--mut)}
+input,select,textarea{width:100%;margin-top:4px;padding:11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:16px inherit;font-family:inherit}
+input[readonly]{opacity:.7}
+#s{width:100%;margin-top:16px;padding:16px;border:0;border-radius:10px;background:var(--gold);color:#1a1300;font:700 18px inherit;font-family:inherit}
+#s:disabled{opacity:.5}
+#m{min-height:24px;margin-top:12px;text-align:center;font-weight:600;color:var(--leaf)}
+#m.err{color:#d64545}
+</style>
+</head>
+<body>
+<h1>Kitchen tracker</h1>
+<div id="tabs"></div>
+<div id="f"></div>
+<button id="s">Save</button>
+<div id="m"></div>
+<script>
+const URL_ = 'https://script.google.com/macros/s/AKfycby4IHQHvf1gwJE9FIT0JWzbN8xMsNnO6Ear4Ri7hwyiQ5YyncaE6IDA0DnrV8EDcGlr/exec';
+// [label, type]: date | num | pick (dropdown if Lookup has a column with this label) | note
+const FORMS = {
+  Groceries: [['Date','date'],['Item Name','pick'],['Vendor','pick'],['Quantity','num'],['Amount','num'],['Payment Status','pick'],['Notes','note']],
+  Wages: [['Date','date'],['Staff Name','pick'],['Amount Paid','num'],['Payment Mode','pick'],['Notes','note']],
+  Sales: [['Date','date'],['Cash Sales','num'],['UPI / Online Sales','num'],['Total Sales','num'],['Bills / Order Count','num'],['Notes','note']],
+  Expenses: [['Date','date'],['Expense','pick'],['Amount','num'],['Frequency','pick']]
+};
+const $ = s => document.querySelector(s);
+let key = '', lists = {}, cur = 'Groceries';
+try { key = localStorage.getItem('k') || ''; } catch (e) {}
+
+function say(t, err) { $('#m').textContent = t; $('#m').className = err ? 'err' : ''; }
+const field = l => $('#f').querySelector('[data-f="' + l + '"]');
+
+Object.keys(FORMS).forEach(n => {
+  const b = document.createElement('button');
+  b.textContent = n; b.onclick = () => { cur = n; say(''); draw(); };
+  $('#tabs').append(b);
+});
+
+function draw() {
+  [...$('#tabs').children].forEach(b => b.className = b.textContent === cur ? 'on' : '');
+  const f = $('#f'); f.innerHTML = '';
+  FORMS[cur].forEach(([l, t]) => {
+    const w = document.createElement('label'); w.textContent = l;
+    let i;
+    if (t === 'pick' && lists[l] && lists[l].length) {
+      i = document.createElement('select');
+      i.append(new Option('Select', ''));
+      lists[l].forEach(x => i.append(new Option(x, x)));
+    } else if (t === 'note') {
+      i = document.createElement('textarea'); i.rows = 2;
+    } else {
+      i = document.createElement('input');
+      if (t === 'date') { i.type = 'date'; i.value = new Date().toLocaleDateString('en-CA'); }
+      if (t === 'num') { i.type = 'number'; i.inputMode = 'decimal'; i.step = 'any'; }
+    }
+    i.dataset.f = l; w.append(i); f.append(w);
+  });
+  if (cur === 'Sales') {
+    const tot = field('Total Sales'); tot.readOnly = true;
+    ['Cash Sales', 'UPI / Online Sales'].forEach(l => field(l).oninput = () =>
+      tot.value = (+field('Cash Sales').value || 0) + (+field('UPI / Online Sales').value || 0));
+  }
+}
+
+async function save() {
+  const data = {}; let bad = false;
+  $('#f').querySelectorAll('[data-f]').forEach(i => {
+    const v = i.value.trim(); data[i.dataset.f] = v;
+    if (!v && i.dataset.f !== 'Notes') bad = true;
+  });
+  if (bad) return say('Fill every field except Notes', 1);
+  $('#s').disabled = true; say('Saving');
+  try {
+    const r = await (await fetch(URL_, { method: 'POST', body: JSON.stringify({ key, sheet: cur, data }) })).json();
+    if (!r.ok) throw r.error;
+    const d = data.Date; draw(); field('Date').value = d; say('Saved');
+  } catch (e) { say('Not saved: ' + e, 1); }
+  $('#s').disabled = false;
+}
+$('#s').onclick = save;
+
+(async function () {
+  if (!key) key = prompt('Passcode') || '';
+  try {
+    const r = await (await fetch(URL_ + '?key=' + encodeURIComponent(key))).json();
+    if (!r.ok) { try { localStorage.removeItem('k'); } catch (e) {} say('Wrong passcode. Reload and try again', 1); return; }
+    try { localStorage.setItem('k', key); } catch (e) {}
+    lists = r.lists;
+  } catch (e) { say('Cannot reach the sheet. Check the web app URL', 1); }
+  draw();
+})();
+</script>
+</body>
+</html>
